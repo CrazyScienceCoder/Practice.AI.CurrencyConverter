@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<WarningsAsErrors>nullable</WarningsAsErrors>
+		<AssemblyName>Practice.Backend.CurrencyConverter.$(MSBuildProjectName)</AssemblyName>
+		<RootNamespace>Practice.Backend.CurrencyConverter.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+		<UserSecretsId>f0edc30c-24e4-4194-856c-28d773a1b28c</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerfileContext>..\..\..</DockerfileContext>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Asp.Versioning.Mvc" Version="8.1.1" />
+		<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.1" />
+		<PackageReference Include="FluentValidation" Version="12.1.1" />
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.5" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.5" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
+		<PackageReference Include="OpenTelemetry" Version="1.15.0" />
+		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.0" />
+		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.15.0" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.1" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.15.0" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.0" />
+		<PackageReference Include="RedisRateLimiting" Version="1.2.1" />
+		<PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+		<PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
+		<PackageReference Include="Serilog.Enrichers.Process" Version="3.0.0" />
+		<PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
+		<PackageReference Include="Serilog.Formatting.Compact" Version="3.0.0" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="10.0.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
+		<PackageReference Include="Serilog.Sinks.OpenSearch" Version="1.4.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Application\src\Application.csproj" />
+	  <ProjectReference Include="..\..\Infrastructure\src\Infrastructure.csproj" />
+	  <ProjectReference Include="..\..\Messages\src\Messages.csproj" />
+	</ItemGroup>
+
+</Project>

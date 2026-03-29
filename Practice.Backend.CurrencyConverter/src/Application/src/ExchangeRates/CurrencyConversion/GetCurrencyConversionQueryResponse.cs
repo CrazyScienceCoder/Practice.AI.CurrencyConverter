@@ -1,0 +1,5 @@
+﻿using Practice.Backend.CurrencyConverter.Application.Shared;
+
+namespace Practice.Backend.CurrencyConverter.Application.ExchangeRates.CurrencyConversion;
+
+public sealed class GetCurrencyConversionQueryResponse : Result<GetCurrencyConversionQueryResult, GetCurrencyConversionQueryResponse>;
