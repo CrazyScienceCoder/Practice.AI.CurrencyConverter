@@ -113,7 +113,7 @@ public sealed class HttpRetryStrategySpecifications
             Content = new StringContent("service unavailable")
         };
         var outcome = Outcome.FromResult<HttpResponseMessage>(httpResponse);
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
         var args = new OnRetryArguments<HttpResponseMessage>(
             context, outcome, 1, TimeSpan.FromSeconds(1), TimeSpan.Zero);
 
@@ -138,7 +138,7 @@ public sealed class HttpRetryStrategySpecifications
         var result = HttpRetryStrategy.Create(loggerMock.Object, DefaultOptions);
 
         var outcome = Outcome.FromException<HttpResponseMessage>(new HttpRequestException("network error"));
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
         var args = new OnRetryArguments<HttpResponseMessage>(
             context, outcome, 1, TimeSpan.FromSeconds(1), TimeSpan.Zero);
 

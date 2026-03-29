@@ -147,7 +147,7 @@ public sealed class HttpCircuitBreakerStrategySpecifications
 
         var httpResponse = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable);
         var outcome = Outcome.FromResult<HttpResponseMessage>(httpResponse);
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
         var args = new OnCircuitOpenedArguments<HttpResponseMessage>(
             context, outcome, breakDuration: TimeSpan.FromSeconds(60), isManual: false);
 
@@ -173,7 +173,7 @@ public sealed class HttpCircuitBreakerStrategySpecifications
 
         var httpResponse = new HttpResponseMessage(HttpStatusCode.OK);
         var outcome = Outcome.FromResult<HttpResponseMessage>(httpResponse);
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
         var args = new OnCircuitClosedArguments<HttpResponseMessage>(context, outcome, isManual: false);
 
         await result.OnClosed!(args);

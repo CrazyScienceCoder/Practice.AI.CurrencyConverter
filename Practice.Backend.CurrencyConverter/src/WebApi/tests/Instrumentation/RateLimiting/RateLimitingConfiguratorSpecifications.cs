@@ -126,7 +126,7 @@ public sealed class RateLimitingConfiguratorSpecifications
 
         httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
         using var reader = new StreamReader(httpContext.Response.Body);
-        var body = await reader.ReadToEndAsync();
+        var body = await reader.ReadToEndAsync(TestContext.Current.CancellationToken);
         body.Should().Contain("Too many requests");
     }
 
