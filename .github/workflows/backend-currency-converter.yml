@@ -21,6 +21,7 @@ env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   SOLUTION: Practice.Backend.CurrencyConverter/Practice.Backend.CurrencyConverter.slnx
+  MESSAGES_CSPROJ: Practice.Backend.CurrencyConverter/src/Messages/src/Messages.csproj
   CLIENT_CSPROJ: Practice.Backend.CurrencyConverter/src/Client/src/Client.csproj
 
 jobs:
@@ -175,6 +176,7 @@ jobs:
 
       - name: Set version in csproj
         run: |
+          sed -i "s|<Version>.*</Version>|<Version>${{ steps.version.outputs.version }}</Version>|" ${{ env.MESSAGES_CSPROJ }}
           sed -i "s|<Version>.*</Version>|<Version>${{ steps.version.outputs.version }}</Version>|" ${{ env.CLIENT_CSPROJ }}
 
       - name: Restore
@@ -182,10 +184,8 @@ jobs:
 
       - name: Pack
         run: |
-          dotnet pack ${{ env.CLIENT_CSPROJ }} \
-            --no-restore \
-            -c Release \
-            --output ./nupkgs
+          dotnet pack ${{ env.MESSAGES_CSPROJ }} --no-restore -c Release --output ./nupkgs
+          dotnet pack ${{ env.CLIENT_CSPROJ }}   --no-restore -c Release --output ./nupkgs
 
       - name: Push to NuGet
         run: |
@@ -225,6 +225,7 @@ jobs:
 
       - name: Set version in csproj
         run: |
+          sed -i "s|<Version>.*</Version>|<Version>${{ steps.version.outputs.version }}</Version>|" ${{ env.MESSAGES_CSPROJ }}
           sed -i "s|<Version>.*</Version>|<Version>${{ steps.version.outputs.version }}</Version>|" ${{ env.CLIENT_CSPROJ }}
 
       - name: Restore
@@ -232,10 +233,8 @@ jobs:
 
       - name: Pack
         run: |
-          dotnet pack ${{ env.CLIENT_CSPROJ }} \
-            --no-restore \
-            -c Release \
-            --output ./nupkgs
+          dotnet pack ${{ env.MESSAGES_CSPROJ }} --no-restore -c Release --output ./nupkgs
+          dotnet pack ${{ env.CLIENT_CSPROJ }}   --no-restore -c Release --output ./nupkgs
 
       - name: Push to NuGet
         run: |
