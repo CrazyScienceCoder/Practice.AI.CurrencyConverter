@@ -1,0 +1,139 @@
+{
+  "realm": "currency-converter",
+  "enabled": true,
+  "displayName": "Currency Converter",
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "accessTokenLifespan": 300,
+  "accessTokenLifespanForImplicitFlow": 900,
+  "ssoSessionIdleTimeout": 28800,
+  "ssoSessionMaxLifespan": 604800,
+  "roles": {
+    "realm": [
+      {
+        "name": "currency:read",
+        "description": "Read access to currency exchange rate endpoints",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "currency:admin",
+        "description": "Admin access including cache management and rate limits",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "ai:chat",
+        "description": "Access to AI chatbot endpoints",
+        "composite": false,
+        "clientRole": false
+      }
+    ]
+  },
+  "defaultRoles": ["currency:read", "ai:chat"],
+  "clients": [
+    {
+      "clientId": "currency-api",
+      "name": "Currency Converter API",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "currency-api-secret",
+      "bearerOnly": true,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false
+    },
+    {
+      "clientId": "ai-agent-api",
+      "name": "AI Agent API",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "ai-agent-api-secret",
+      "bearerOnly": true,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false
+    },
+    {
+      "clientId": "frontend",
+      "name": "Currency Converter Frontend",
+      "enabled": true,
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "frontend-secret",
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "http://localhost:3000/*",
+        "http://frontend:3000/*"
+      ],
+      "webOrigins": [
+        "http://localhost:3000",
+        "http://frontend:3000"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
+      "protocolMappers": [
+        {
+          "name": "realm-roles-mapper",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "multivalued": "true",
+            "userinfo.token.claim": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "roles",
+            "jsonType.label": "String"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "admin@currencyconverter.com",
+      "email": "admin@currencyconverter.com",
+      "firstName": "Admin",
+      "lastName": "User",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Admin1234!",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["currency:read", "currency:admin", "ai:chat"]
+    },
+    {
+      "username": "guest@currencyconverter.com",
+      "email": "guest@currencyconverter.com",
+      "firstName": "Guest",
+      "lastName": "User",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Guest1234!",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["currency:read", "ai:chat"]
+    }
+  ]
+}

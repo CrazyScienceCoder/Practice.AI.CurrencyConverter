@@ -1,0 +1,5 @@
+﻿using Practice.Backend.CurrencyConverter.Application.Shared;
+
+namespace Practice.Backend.CurrencyConverter.Application.ExchangeRates.GetHistorical;
+
+public sealed class GetHistoricalExchangeRateQueryResponse : Result<GetHistoricalExchangeRateQueryResult, GetHistoricalExchangeRateQueryResponse>;
