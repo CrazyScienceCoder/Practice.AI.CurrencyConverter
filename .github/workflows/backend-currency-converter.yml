@@ -31,6 +31,10 @@ jobs:
     name: Build & Test
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' || github.event_name == 'push'
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
 
     steps:
       - name: Checkout
@@ -91,6 +95,10 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     needs: build-and-test
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
 
     services:
       redis:
