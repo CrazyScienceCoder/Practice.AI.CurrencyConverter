@@ -179,7 +179,6 @@ jobs:
       - name: Pack
         run: |
           dotnet pack ${{ env.CLIENT_CSPROJ }} \
-            --no-restore \
             -c Release \
             /p:Version=${{ steps.version.outputs.version }} \
             --output ./nupkgs
@@ -226,7 +225,6 @@ jobs:
       - name: Pack
         run: |
           dotnet pack ${{ env.CLIENT_CSPROJ }} \
-            --no-restore \
             -c Release \
             /p:Version=${{ steps.version.outputs.version }} \
             --output ./nupkgs
