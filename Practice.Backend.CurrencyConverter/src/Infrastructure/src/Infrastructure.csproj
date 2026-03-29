@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<WarningsAsErrors>nullable</WarningsAsErrors>
+		<AssemblyName>Practice.Backend.CurrencyConverter.$(MSBuildProjectName)</AssemblyName>
+		<RootNamespace>Practice.Backend.CurrencyConverter.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Application\src\Application.csproj" />
+	  <ProjectReference Include="..\..\Frankfurter.ApiClient\src\Frankfurter.ApiClient.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="ExchangeRateProviders\Mappers\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.5" />
+	  <PackageReference Include="Scrutor" Version="7.0.0" />
+	  <PackageReference Include="StackExchange.Redis" Version="2.12.4" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+	    <_Parameter1>Practice.Backend.CurrencyConverter.Infrastructure.Tests</_Parameter1>
+	  </AssemblyAttribute>
+	</ItemGroup>
+
+</Project>

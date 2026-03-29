@@ -1,0 +1,33 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Application/">
+    <Project Path="src/Application/src/Application.csproj" />
+    <Project Path="src/Application/tests/Application.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/Client/">
+    <Project Path="src/Client/src/Client.csproj" />
+    <Project Path="src/Client/tests/Client.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/Domain/">
+    <Project Path="src/Domain/src/Domain.csproj" />
+    <Project Path="src/Domain/tests/Domain.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/Frankfurter.ApiClient/">
+    <Project Path="src/Frankfurter.ApiClient/src/Frankfurter.ApiClient.csproj" />
+    <Project Path="src/Frankfurter.ApiClient/tests/Frankfurter.ApiClient.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/Infrastructure/">
+    <Project Path="src/Infrastructure/src/Infrastructure.csproj" />
+    <Project Path="src/Infrastructure/tests/Infrastructure.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/Messages/">
+    <Project Path="src/Messages/src/Messages.csproj" />
+  </Folder>
+  <Folder Name="/src/WebApi/">
+    <Project Path="src/WebApi/src/WebApi.csproj" />
+    <Project Path="src/WebApi/tests/WebApi.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Integration.Tests/Integration.Tests.csproj" />
+  </Folder>
+</Solution>

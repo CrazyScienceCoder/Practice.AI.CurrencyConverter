@@ -1,0 +1,228 @@
+name: Backend · Currency Converter
+
+on:
+  pull_request:
+    branches: [develop, main]
+    paths:
+      - 'Practice.Backend.CurrencyConverter/**'
+      - '.github/workflows/backend-currency-converter.yml'
+  push:
+    branches: [develop, main]
+    paths:
+      - 'Practice.Backend.CurrencyConverter/**'
+      - '.github/workflows/backend-currency-converter.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  SOLUTION: Practice.Backend.CurrencyConverter/Practice.Backend.CurrencyConverter.slnx
+  CLIENT_CSPROJ: Practice.Backend.CurrencyConverter/src/Client/src/Client.csproj
+
+jobs:
+  # ──────────────────────────────────────────────
+  # CI: build + unit/integration-free tests (PRs and pushes)
+  # ──────────────────────────────────────────────
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Restore
+        run: dotnet restore ${{ env.SOLUTION }}
+
+      - name: Build
+        run: dotnet build ${{ env.SOLUTION }} --no-restore -c Release
+
+      # Run all test projects except Integration.Tests (requires Redis)
+      - name: Test – Domain
+        run: dotnet test Practice.Backend.CurrencyConverter/src/Domain/tests --no-build -c Release --logger "github" --results-directory ./test-results/domain
+
+      - name: Test – Application
+        run: dotnet test Practice.Backend.CurrencyConverter/src/Application/tests --no-build -c Release --logger "github" --results-directory ./test-results/application
+
+      - name: Test – Infrastructure
+        run: dotnet test Practice.Backend.CurrencyConverter/src/Infrastructure/tests --no-build -c Release --logger "github" --results-directory ./test-results/infrastructure
+
+      - name: Test – Frankfurter.ApiClient
+        run: dotnet test Practice.Backend.CurrencyConverter/src/Frankfurter.ApiClient/tests --no-build -c Release --logger "github" --results-directory ./test-results/frankfurter
+
+      - name: Test – Client
+        run: dotnet test Practice.Backend.CurrencyConverter/src/Client/tests --no-build -c Release --logger "github" --results-directory ./test-results/client
+
+      - name: Test – WebApi
+        run: dotnet test Practice.Backend.CurrencyConverter/src/WebApi/tests --no-build -c Release --logger "github" --results-directory ./test-results/webapi
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-backend
+          path: ./test-results/**/*.xml
+          retention-days: 7
+
+  # ──────────────────────────────────────────────
+  # Integration tests (push to develop / main only)
+  # ──────────────────────────────────────────────
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    needs: build-and-test
+
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Restore
+        run: dotnet restore ${{ env.SOLUTION }}
+
+      - name: Build
+        run: dotnet build ${{ env.SOLUTION }} --no-restore -c Release
+
+      - name: Test – Integration
+        env:
+          Redis__ConnectionString: localhost:6379
+        run: dotnet test Practice.Backend.CurrencyConverter/tests/Integration.Tests --no-build -c Release --logger "github" --results-directory ./test-results/integration
+
+      - name: Upload integration test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-backend-integration
+          path: ./test-results/integration/**/*.xml
+          retention-days: 7
+
+  # ──────────────────────────────────────────────
+  # NuGet publish – develop branch → pre-release
+  # ──────────────────────────────────────────────
+  publish-dev:
+    name: Publish NuGet (dev pre-release)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    needs: [build-and-test, integration-tests]
+    environment: nuget-dev
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # needed for accurate versioning
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Restore
+        run: dotnet restore ${{ env.CLIENT_CSPROJ }}
+
+      - name: Determine version
+        id: version
+        run: |
+          BASE=$(dotnet msbuild ${{ env.CLIENT_CSPROJ }} -t:WriteVersionToFile -p:OutputPath=/dev/stdout 2>/dev/null \
+            | grep -oP '(?<=<Version>)[^<]+' || true)
+          # Fallback: read from csproj directly
+          if [ -z "$BASE" ]; then
+            BASE=$(grep -oP '(?<=<Version>)[^<]+' ${{ env.CLIENT_CSPROJ }} | head -1)
+          fi
+          SUFFIX="dev.$(date -u +%Y%m%d%H%M%S)"
+          FULL="${BASE}-${SUFFIX}"
+          echo "version=${FULL}" >> "$GITHUB_OUTPUT"
+          echo "Publishing pre-release version: ${FULL}"
+
+      - name: Pack
+        run: |
+          dotnet pack ${{ env.CLIENT_CSPROJ }} \
+            --no-restore \
+            -c Release \
+            /p:Version=${{ steps.version.outputs.version }} \
+            --output ./nupkgs
+
+      - name: Push to NuGet
+        run: |
+          dotnet nuget push ./nupkgs/*.nupkg \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+
+  # ──────────────────────────────────────────────
+  # NuGet publish – main branch → stable release
+  # ──────────────────────────────────────────────
+  publish-release:
+    name: Publish NuGet (stable release)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [build-and-test, integration-tests]
+    environment: nuget-prod
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Restore
+        run: dotnet restore ${{ env.CLIENT_CSPROJ }}
+
+      - name: Read version
+        id: version
+        run: |
+          VERSION=$(grep -oP '(?<=<Version>)[^<]+' ${{ env.CLIENT_CSPROJ }} | head -1)
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Publishing stable version: ${VERSION}"
+
+      - name: Pack
+        run: |
+          dotnet pack ${{ env.CLIENT_CSPROJ }} \
+            --no-restore \
+            -c Release \
+            /p:Version=${{ steps.version.outputs.version }} \
+            --output ./nupkgs
+
+      - name: Push to NuGet
+        run: |
+          dotnet nuget push ./nupkgs/*.nupkg \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: client/v${{ steps.version.outputs.version }}
+          name: "Client v${{ steps.version.outputs.version }}"
+          generate_release_notes: true
+          files: ./nupkgs/*.nupkg

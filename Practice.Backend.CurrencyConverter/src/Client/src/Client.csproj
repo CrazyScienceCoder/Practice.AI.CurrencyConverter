@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<WarningsAsErrors>nullable</WarningsAsErrors>
+		<AssemblyName>Practice.Backend.CurrencyConverter.$(MSBuildProjectName)</AssemblyName>
+		<RootNamespace>Practice.Backend.CurrencyConverter.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+
+		<!-- NuGet package metadata -->
+		<IsPackable>true</IsPackable>
+		<PackageId>Practice.Backend.CurrencyConverter.Client</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>Practice</Authors>
+		<Company>Practice</Company>
+		<Description>A typed HTTP client library for the Currency Converter API. Provides DI-friendly, configurable access to exchange rate endpoints (latest rates, historical rates, and currency conversion) with built-in resilience (retry + circuit breaker) and JWT bearer authentication support.</Description>
+		<PackageTags>currency;exchange-rate;http-client</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryType>git</RepositoryType>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" Condition="Exists('README.md')" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.9" />
+		<PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="10.0.5" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.5" />
+		<PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.4.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.5" />
+		<PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="10.0.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Messages\src\Messages.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="Practice.Backend.CurrencyConverter.Client.Tests" />
+		<InternalsVisibleTo Include="Practice.Chatbot.CurrencyConverter.Infrastructure.Tests" />
+	</ItemGroup>
+
+</Project>
