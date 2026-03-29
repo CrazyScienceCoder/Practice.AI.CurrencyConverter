@@ -1,6 +1,8 @@
+using System.Net;
 using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Logging;
 using Polly;
+using Polly.Retry;
 using Practice.Backend.CurrencyConverter.Client.Configuration;
 using Practice.Backend.CurrencyConverter.Client.Resilience;
 
@@ -98,5 +100,59 @@ public sealed class HttpRetryStrategySpecifications
         var result = HttpRetryStrategy.Create(loggerMock.Object, options);
 
         result.Delay.Should().Be(TimeSpan.FromSeconds(initialDelaySeconds));
+    }
+
+    [Fact]
+    public async Task OnRetry_WhenOutcomeHasHttpResponse_LogsWarning()
+    {
+        var loggerMock = new Mock<ILogger>();
+        var result = HttpRetryStrategy.Create(loggerMock.Object, DefaultOptions);
+
+        var httpResponse = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+        {
+            Content = new StringContent("service unavailable")
+        };
+        var outcome = Outcome.FromResult<HttpResponseMessage>(httpResponse);
+        var context = ResilienceContextPool.Shared.Get();
+        var args = new OnRetryArguments<HttpResponseMessage>(
+            context, outcome, 1, TimeSpan.FromSeconds(1), TimeSpan.Zero);
+
+        await result.OnRetry!(args);
+
+        loggerMock.Verify(
+            l => l.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception?>(),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+            Times.Once);
+
+        ResilienceContextPool.Shared.Return(context);
+    }
+
+    [Fact]
+    public async Task OnRetry_WhenOutcomeHasException_LogsWarning()
+    {
+        var loggerMock = new Mock<ILogger>();
+        var result = HttpRetryStrategy.Create(loggerMock.Object, DefaultOptions);
+
+        var outcome = Outcome.FromException<HttpResponseMessage>(new HttpRequestException("network error"));
+        var context = ResilienceContextPool.Shared.Get();
+        var args = new OnRetryArguments<HttpResponseMessage>(
+            context, outcome, 1, TimeSpan.FromSeconds(1), TimeSpan.Zero);
+
+        await result.OnRetry!(args);
+
+        loggerMock.Verify(
+            l => l.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception?>(),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+            Times.Once);
+
+        ResilienceContextPool.Shared.Return(context);
     }
 }

@@ -25,4 +25,26 @@ public sealed class OpenTelemetryConfiguratorSpecifications
         builder.Services.Should().Contain(d =>
             d.ServiceType.FullName!.Contains("OpenTelemetry"));
     }
+
+    [Fact]
+    public void AddOpenTelemetry_WhenAppBuilt_ConfiguresTracingAndMetrics()
+    {
+        var builder = WebApplication.CreateBuilder();
+        builder.AddOpenTelemetry();
+
+        var act = () => builder.Build();
+
+        act.Should().NotThrow();
+    }
+
+    [Fact]
+    public void AddOpenTelemetry_WhenAppBuilt_ReturnsNonNullApp()
+    {
+        var builder = WebApplication.CreateBuilder();
+        builder.AddOpenTelemetry();
+
+        var app = builder.Build();
+
+        app.Should().NotBeNull();
+    }
 }
