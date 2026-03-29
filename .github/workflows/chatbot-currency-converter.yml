@@ -29,7 +29,6 @@ jobs:
   build-and-test:
     name: Build & Test
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || github.event_name == 'push'
     permissions:
       contents: read
       checks: write
@@ -85,7 +84,6 @@ jobs:
   integration-tests:
     name: Integration Tests
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
     needs: build-and-test
     permissions:
       contents: read
@@ -121,8 +119,6 @@ jobs:
       - name: Test – Integration
         env:
           Redis__ConnectionString: localhost:6379
-          # Integration tests mock the AI provider — no real API key needed
-          AI__Provider: Mock
         run: dotnet test Practice.Chatbot.CurrencyConverter/tests/Integration.Tests --no-build -c Release --logger "trx" --results-directory ./test-results/integration
 
       - name: Report integration test results
