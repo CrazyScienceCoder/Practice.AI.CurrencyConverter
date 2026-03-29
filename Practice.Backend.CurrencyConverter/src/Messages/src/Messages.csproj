@@ -6,5 +6,16 @@
 		<WarningsAsErrors>nullable</WarningsAsErrors>
 		<AssemblyName>Practice.Backend.CurrencyConverter.$(MSBuildProjectName)</AssemblyName>
 		<RootNamespace>Practice.Backend.CurrencyConverter.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+
+		<!-- NuGet package metadata -->
+		<IsPackable>true</IsPackable>
+		<PackageId>Practice.Backend.CurrencyConverter.Messages</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>Practice</Authors>
+		<Company>Practice</Company>
+		<Description>Shared request and response message contracts for the Currency Converter API.</Description>
+		<PackageTags>currency;exchange-rate;messages;contracts</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RepositoryType>git</RepositoryType>
 	</PropertyGroup>
 </Project>

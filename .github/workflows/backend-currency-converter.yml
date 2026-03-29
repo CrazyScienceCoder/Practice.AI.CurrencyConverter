@@ -21,6 +21,7 @@ env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   SOLUTION: Practice.Backend.CurrencyConverter/Practice.Backend.CurrencyConverter.slnx
+  MESSAGES_CSPROJ: Practice.Backend.CurrencyConverter/src/Messages/src/Messages.csproj
   CLIENT_CSPROJ: Practice.Backend.CurrencyConverter/src/Client/src/Client.csproj
 
 jobs:
@@ -159,16 +160,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0  # needed for accurate versioning
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.x'
-
-      - name: Restore
-        run: dotnet restore ${{ env.CLIENT_CSPROJ }}
 
       - name: Determine version
         id: version
@@ -178,13 +174,18 @@ jobs:
           echo "version=${FULL}" >> "$GITHUB_OUTPUT"
           echo "Publishing pre-release version: ${FULL}"
 
+      - name: Set version in csproj
+        run: |
+          sed -i "s|<Version>.*</Version>|<Version>${{ steps.version.outputs.version }}</Version>|" ${{ env.MESSAGES_CSPROJ }}
+          sed -i "s|<Version>.*</Version>|<Version>${{ steps.version.outputs.version }}</Version>|" ${{ env.CLIENT_CSPROJ }}
+
+      - name: Restore
+        run: dotnet restore ${{ env.SOLUTION }}
+
       - name: Pack
         run: |
-          dotnet pack ${{ env.CLIENT_CSPROJ }} \
-            --no-restore \
-            -c Release \
-            /p:Version=${{ steps.version.outputs.version }} \
-            --output ./nupkgs
+          dotnet pack ${{ env.MESSAGES_CSPROJ }} --no-restore -c Release --output ./nupkgs
+          dotnet pack ${{ env.CLIENT_CSPROJ }}   --no-restore -c Release --output ./nupkgs
 
       - name: Push to NuGet
         run: |
@@ -214,9 +215,6 @@ jobs:
         with:
           dotnet-version: '10.x'
 
-      - name: Restore
-        run: dotnet restore ${{ env.CLIENT_CSPROJ }}
-
       - name: Determine version
         id: version
         run: |
@@ -225,13 +223,18 @@ jobs:
           echo "version=${FULL}" >> "$GITHUB_OUTPUT"
           echo "Publishing stable version: ${FULL}"
 
+      - name: Set version in csproj
+        run: |
+          sed -i "s|<Version>.*</Version>|<Version>${{ steps.version.outputs.version }}</Version>|" ${{ env.MESSAGES_CSPROJ }}
+          sed -i "s|<Version>.*</Version>|<Version>${{ steps.version.outputs.version }}</Version>|" ${{ env.CLIENT_CSPROJ }}
+
+      - name: Restore
+        run: dotnet restore ${{ env.SOLUTION }}
+
       - name: Pack
         run: |
-          dotnet pack ${{ env.CLIENT_CSPROJ }} \
-            --no-restore \
-            -c Release \
-            /p:Version=${{ steps.version.outputs.version }} \
-            --output ./nupkgs
+          dotnet pack ${{ env.MESSAGES_CSPROJ }} --no-restore -c Release --output ./nupkgs
+          dotnet pack ${{ env.CLIENT_CSPROJ }}   --no-restore -c Release --output ./nupkgs
 
       - name: Push to NuGet
         run: |
