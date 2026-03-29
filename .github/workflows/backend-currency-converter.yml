@@ -173,14 +173,8 @@ jobs:
       - name: Determine version
         id: version
         run: |
-          BASE=$(dotnet msbuild ${{ env.CLIENT_CSPROJ }} -t:WriteVersionToFile -p:OutputPath=/dev/stdout 2>/dev/null \
-            | grep -oP '(?<=<Version>)[^<]+' || true)
-          # Fallback: read from csproj directly
-          if [ -z "$BASE" ]; then
-            BASE=$(grep -oP '(?<=<Version>)[^<]+' ${{ env.CLIENT_CSPROJ }} | head -1)
-          fi
-          SUFFIX="dev.$(date -u +%Y%m%d%H%M%S)"
-          FULL="${BASE}-${SUFFIX}"
+          MAJOR_MINOR=$(grep -oP '(?<=<Version>)\d+\.\d+' ${{ env.CLIENT_CSPROJ }} | head -1)
+          FULL="${MAJOR_MINOR}.${{ github.run_number }}-dev"
           echo "version=${FULL}" >> "$GITHUB_OUTPUT"
           echo "Publishing pre-release version: ${FULL}"
 
@@ -221,12 +215,13 @@ jobs:
       - name: Restore
         run: dotnet restore ${{ env.CLIENT_CSPROJ }}
 
-      - name: Read version
+      - name: Determine version
         id: version
         run: |
-          VERSION=$(grep -oP '(?<=<Version>)[^<]+' ${{ env.CLIENT_CSPROJ }} | head -1)
-          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
-          echo "Publishing stable version: ${VERSION}"
+          MAJOR_MINOR=$(grep -oP '(?<=<Version>)\d+\.\d+' ${{ env.CLIENT_CSPROJ }} | head -1)
+          FULL="${MAJOR_MINOR}.${{ github.run_number }}"
+          echo "version=${FULL}" >> "$GITHUB_OUTPUT"
+          echo "Publishing stable version: ${FULL}"
 
       - name: Pack
         run: |
