@@ -20,6 +20,7 @@ env:
   DOTNET_NOLOGO: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   SOLUTION: Practice.Backend.CurrencyConverter/Practice.Backend.CurrencyConverter.slnx
   CLIENT_CSPROJ: Practice.Backend.CurrencyConverter/src/Client/src/Client.csproj
 
