@@ -53,22 +53,22 @@ jobs:
 
       # Run all test projects except Integration.Tests (requires Redis)
       - name: Test – Domain
-        run: dotnet test Practice.Backend.CurrencyConverter/src/Domain/tests --no-build -c Release --logger "trx" --results-directory ./test-results/domain
+        run: dotnet test Practice.Backend.CurrencyConverter/src/Domain/tests --no-build -c Release --logger "trx" --results-directory ./test-results/domain --collect:"XPlat Code Coverage"
 
       - name: Test – Application
-        run: dotnet test Practice.Backend.CurrencyConverter/src/Application/tests --no-build -c Release --logger "trx" --results-directory ./test-results/application
+        run: dotnet test Practice.Backend.CurrencyConverter/src/Application/tests --no-build -c Release --logger "trx" --results-directory ./test-results/application --collect:"XPlat Code Coverage"
 
       - name: Test – Infrastructure
-        run: dotnet test Practice.Backend.CurrencyConverter/src/Infrastructure/tests --no-build -c Release --logger "trx" --results-directory ./test-results/infrastructure
+        run: dotnet test Practice.Backend.CurrencyConverter/src/Infrastructure/tests --no-build -c Release --logger "trx" --results-directory ./test-results/infrastructure --collect:"XPlat Code Coverage"
 
       - name: Test – Frankfurter.ApiClient
-        run: dotnet test Practice.Backend.CurrencyConverter/src/Frankfurter.ApiClient/tests --no-build -c Release --logger "trx" --results-directory ./test-results/frankfurter
+        run: dotnet test Practice.Backend.CurrencyConverter/src/Frankfurter.ApiClient/tests --no-build -c Release --logger "trx" --results-directory ./test-results/frankfurter --collect:"XPlat Code Coverage"
 
       - name: Test – Client
-        run: dotnet test Practice.Backend.CurrencyConverter/src/Client/tests --no-build -c Release --logger "trx" --results-directory ./test-results/client
+        run: dotnet test Practice.Backend.CurrencyConverter/src/Client/tests --no-build -c Release --logger "trx" --results-directory ./test-results/client --collect:"XPlat Code Coverage"
 
       - name: Test – WebApi
-        run: dotnet test Practice.Backend.CurrencyConverter/src/WebApi/tests --no-build -c Release --logger "trx" --results-directory ./test-results/webapi
+        run: dotnet test Practice.Backend.CurrencyConverter/src/WebApi/tests --no-build -c Release --logger "trx" --results-directory ./test-results/webapi --collect:"XPlat Code Coverage"
 
       - name: Report test results
         if: always()
@@ -78,6 +78,16 @@ jobs:
           path: './test-results/**/*.trx'
           reporter: dotnet-trx
           fail-on-error: true
+
+      - name: Coverage report
+        if: always()
+        run: |
+          dotnet tool install -g dotnet-reportgenerator-globaltool
+          reportgenerator \
+            -reports:"./test-results/**/coverage.cobertura.xml" \
+            -targetdir:"./coverage-report" \
+            -reporttypes:"MarkdownSummaryGithub"
+          cat ./coverage-report/SummaryGithub.md >> $GITHUB_STEP_SUMMARY
 
       - name: Upload test results
         if: always()
@@ -128,7 +138,7 @@ jobs:
       - name: Test – Integration
         env:
           Redis__ConnectionString: localhost:6379
-        run: dotnet test Practice.Backend.CurrencyConverter/tests/Integration.Tests --no-build -c Release --logger "trx" --results-directory ./test-results/integration
+        run: dotnet test Practice.Backend.CurrencyConverter/tests/Integration.Tests --no-build -c Release --logger "trx" --results-directory ./test-results/integration --collect:"XPlat Code Coverage"
 
       - name: Report integration test results
         if: always()
@@ -138,6 +148,16 @@ jobs:
           path: './test-results/integration/**/*.trx'
           reporter: dotnet-trx
           fail-on-error: true
+
+      - name: Coverage report
+        if: always()
+        run: |
+          dotnet tool install -g dotnet-reportgenerator-globaltool
+          reportgenerator \
+            -reports:"./test-results/**/coverage.cobertura.xml" \
+            -targetdir:"./coverage-report" \
+            -reporttypes:"MarkdownSummaryGithub"
+          cat ./coverage-report/SummaryGithub.md >> $GITHUB_STEP_SUMMARY
 
       - name: Upload integration test results
         if: always()
