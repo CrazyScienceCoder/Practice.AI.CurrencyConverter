@@ -37,7 +37,6 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: Practice.Web.CurrencyConverter/package-lock.json
 
       - name: Install dependencies
         run: npm ci
