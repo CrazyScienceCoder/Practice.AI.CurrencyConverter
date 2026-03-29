@@ -37,7 +37,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Messages\src\Messages.csproj" />
+		<ProjectReference Include="..\..\Messages\src\Messages.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
 	</ItemGroup>
 
 	<ItemGroup>
