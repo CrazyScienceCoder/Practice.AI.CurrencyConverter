@@ -16,6 +16,11 @@
 		<Description>Shared request and response message contracts for the Currency Converter API.</Description>
 		<PackageTags>currency;exchange-rate;messages;contracts</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryType>git</RepositoryType>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" Condition="Exists('README.md')" />
+	</ItemGroup>
 </Project>
