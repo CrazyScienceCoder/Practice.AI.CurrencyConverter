@@ -47,23 +47,32 @@ jobs:
         run: dotnet build ${{ env.SOLUTION }} --no-restore -c Release
 
       - name: Test – Domain
-        run: dotnet test Practice.Chatbot.CurrencyConverter/src/Domain/tests --no-build -c Release --logger "github" --results-directory ./test-results/domain
+        run: dotnet test Practice.Chatbot.CurrencyConverter/src/Domain/tests --no-build -c Release --logger "trx" --results-directory ./test-results/domain
 
       - name: Test – Application
-        run: dotnet test Practice.Chatbot.CurrencyConverter/src/Application/tests --no-build -c Release --logger "github" --results-directory ./test-results/application
+        run: dotnet test Practice.Chatbot.CurrencyConverter/src/Application/tests --no-build -c Release --logger "trx" --results-directory ./test-results/application
 
       - name: Test – Infrastructure
-        run: dotnet test Practice.Chatbot.CurrencyConverter/src/Infrastructure/tests --no-build -c Release --logger "github" --results-directory ./test-results/infrastructure
+        run: dotnet test Practice.Chatbot.CurrencyConverter/src/Infrastructure/tests --no-build -c Release --logger "trx" --results-directory ./test-results/infrastructure
 
       - name: Test – WebApi
-        run: dotnet test Practice.Chatbot.CurrencyConverter/src/WebApi/tests --no-build -c Release --logger "github" --results-directory ./test-results/webapi
+        run: dotnet test Practice.Chatbot.CurrencyConverter/src/WebApi/tests --no-build -c Release --logger "trx" --results-directory ./test-results/webapi
+
+      - name: Report test results
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Unit Tests – Chatbot
+          path: './test-results/**/*.trx'
+          reporter: dotnet-trx
+          fail-on-error: true
 
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results-chatbot
-          path: ./test-results/**/*.xml
+          path: ./test-results/**/*.trx
           retention-days: 7
 
   # ──────────────────────────────────────────────
@@ -106,12 +115,21 @@ jobs:
           Redis__ConnectionString: localhost:6379
           # Integration tests mock the AI provider — no real API key needed
           AI__Provider: Mock
-        run: dotnet test Practice.Chatbot.CurrencyConverter/tests/Integration.Tests --no-build -c Release --logger "github" --results-directory ./test-results/integration
+        run: dotnet test Practice.Chatbot.CurrencyConverter/tests/Integration.Tests --no-build -c Release --logger "trx" --results-directory ./test-results/integration
+
+      - name: Report integration test results
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Integration Tests – Chatbot
+          path: './test-results/integration/**/*.trx'
+          reporter: dotnet-trx
+          fail-on-error: true
 
       - name: Upload integration test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results-chatbot-integration
-          path: ./test-results/integration/**/*.xml
+          path: ./test-results/integration/**/*.trx
           retention-days: 7
