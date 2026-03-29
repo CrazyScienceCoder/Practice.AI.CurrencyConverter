@@ -165,9 +165,6 @@ jobs:
         with:
           dotnet-version: '10.x'
 
-      - name: Restore
-        run: dotnet restore ${{ env.SOLUTION }}
-
       - name: Determine version
         id: version
         run: |
@@ -176,11 +173,18 @@ jobs:
           echo "version=${FULL}" >> "$GITHUB_OUTPUT"
           echo "Publishing pre-release version: ${FULL}"
 
+      - name: Set version in csproj
+        run: |
+          sed -i "s|<Version>.*</Version>|<Version>${{ steps.version.outputs.version }}</Version>|" ${{ env.CLIENT_CSPROJ }}
+
+      - name: Restore
+        run: dotnet restore ${{ env.SOLUTION }}
+
       - name: Pack
         run: |
           dotnet pack ${{ env.CLIENT_CSPROJ }} \
+            --no-restore \
             -c Release \
-            /p:Version=${{ steps.version.outputs.version }} \
             --output ./nupkgs
 
       - name: Push to NuGet
@@ -211,9 +215,6 @@ jobs:
         with:
           dotnet-version: '10.x'
 
-      - name: Restore
-        run: dotnet restore ${{ env.SOLUTION }}
-
       - name: Determine version
         id: version
         run: |
@@ -222,11 +223,18 @@ jobs:
           echo "version=${FULL}" >> "$GITHUB_OUTPUT"
           echo "Publishing stable version: ${FULL}"
 
+      - name: Set version in csproj
+        run: |
+          sed -i "s|<Version>.*</Version>|<Version>${{ steps.version.outputs.version }}</Version>|" ${{ env.CLIENT_CSPROJ }}
+
+      - name: Restore
+        run: dotnet restore ${{ env.SOLUTION }}
+
       - name: Pack
         run: |
           dotnet pack ${{ env.CLIENT_CSPROJ }} \
+            --no-restore \
             -c Release \
-            /p:Version=${{ steps.version.outputs.version }} \
             --output ./nupkgs
 
       - name: Push to NuGet
