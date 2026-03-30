@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -147,6 +148,59 @@ public sealed class AuthenticationConfiguratorSpecifications
     public void Policies_CurrencyAdmin_HasExpectedValue()
     {
         Policies.CurrencyAdmin.Should().Be("currency:admin");
+    }
+
+    [Fact]
+    public async Task AddJwtAuth_OnAuthenticationFailed_SetsWwwAuthenticateErrorHeader()
+    {
+        var builder = CreateIsolatedBuilder(ValidConfig());
+        builder.AddJwtAuth();
+        var app = builder.Build();
+
+        var jwtOptions = app.Services
+            .GetRequiredService<IOptionsMonitor<JwtBearerOptions>>()
+            .Get(JwtBearerDefaults.AuthenticationScheme);
+
+        var httpContext = new DefaultHttpContext();
+        var scheme = new AuthenticationScheme(
+            JwtBearerDefaults.AuthenticationScheme,
+            JwtBearerDefaults.AuthenticationScheme,
+            typeof(JwtBearerHandler));
+        var context = new AuthenticationFailedContext(httpContext, scheme, jwtOptions)
+        {
+            Exception = new Exception("invalid_token_message")
+        };
+
+        await jwtOptions.Events!.OnAuthenticationFailed(context);
+
+        httpContext.Response.Headers["WWW-Authenticate-Error"].Should().ContainSingle("invalid_token_message");
+    }
+
+    [Fact]
+    public async Task AddJwtAuth_OnAuthenticationFailed_ReturnsCompletedTask()
+    {
+        var builder = CreateIsolatedBuilder(ValidConfig());
+        builder.AddJwtAuth();
+        var app = builder.Build();
+
+        var jwtOptions = app.Services
+            .GetRequiredService<IOptionsMonitor<JwtBearerOptions>>()
+            .Get(JwtBearerDefaults.AuthenticationScheme);
+
+        var httpContext = new DefaultHttpContext();
+        var scheme = new AuthenticationScheme(
+            JwtBearerDefaults.AuthenticationScheme,
+            JwtBearerDefaults.AuthenticationScheme,
+            typeof(JwtBearerHandler));
+        var context = new AuthenticationFailedContext(httpContext, scheme, jwtOptions)
+        {
+            Exception = new Exception("test")
+        };
+
+        var task = jwtOptions.Events!.OnAuthenticationFailed(context);
+
+        await task;
+        task.IsCompletedSuccessfully.Should().BeTrue();
     }
 
     private static WebApplicationBuilder CreateIsolatedBuilder(Dictionary<string, string?> config)

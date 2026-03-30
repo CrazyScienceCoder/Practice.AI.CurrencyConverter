@@ -23,9 +23,6 @@ env:
   SOLUTION: Practice.Chatbot.CurrencyConverter/Practice.Chatbot.CurrencyConverter.slnx
 
 jobs:
-  # ──────────────────────────────────────────────
-  # CI: build + unit tests (PRs and pushes)
-  # ──────────────────────────────────────────────
   build-and-test:
     name: Build & Test
     runs-on: ubuntu-latest
@@ -88,9 +85,6 @@ jobs:
           path: ./test-results/**/*.trx
           retention-days: 7
 
-  # ──────────────────────────────────────────────
-  # Integration tests (push to develop / main only)
-  # ──────────────────────────────────────────────
   integration-tests:
     name: Integration Tests
     runs-on: ubuntu-latest
