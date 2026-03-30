@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Polly;
 
 namespace Practice.Backend.CurrencyConverter.Frankfurter.ApiClient.Strategies;
@@ -24,7 +23,7 @@ public static class HttpRetryStrategy
 
                 if (outcome.Result is not null)
                 {
-                    var rawResponse = JsonConvert.SerializeObject(await outcome.Result.Content.ReadAsStringAsync());
+                    var rawResponse = await outcome.Result.Content.ReadAsStringAsync();
 
                     logger.LogWarning(
                         """
