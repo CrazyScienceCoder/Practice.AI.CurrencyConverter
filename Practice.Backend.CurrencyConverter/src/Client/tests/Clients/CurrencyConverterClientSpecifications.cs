@@ -1,4 +1,6 @@
 using System.Net;
+using System.Reflection;
+using System.Text.Json;
 using Practice.Backend.CurrencyConverter.Client.Exceptions;
 using Practice.Backend.CurrencyConverter.Messages.Features.ExchangeRates.Conversion;
 using Practice.Backend.CurrencyConverter.Messages.Features.ExchangeRates.Historical;
@@ -334,5 +336,34 @@ public partial class CurrencyConverterClientSpecifications
             new ConversionRequest { BaseCurrency = "EUR", ToCurrency = "USD", Amount = 100 }, TestContext.Current.CancellationToken);
 
         await act.Should().ThrowExactlyAsync<CurrencyConverterApiException>();
+    }
+
+    [Fact]
+    public void DateOnlyJsonConverter_Write_SerializesDateAsYearMonthDay()
+    {
+        var jsonOptions = GetJsonOptions();
+        var date = new DateOnly(2024, 3, 15);
+
+        var json = JsonSerializer.Serialize(date, jsonOptions);
+
+        json.Should().Be("\"2024-03-15\"");
+    }
+
+    [Fact]
+    public void DateOnlyJsonConverter_WriteAsPropertyName_SerializesDateKeyAsYearMonthDay()
+    {
+        var jsonOptions = GetJsonOptions();
+        var dict = new Dictionary<DateOnly, string> { [new DateOnly(2024, 3, 15)] = "value" };
+
+        var json = JsonSerializer.Serialize(dict, jsonOptions);
+
+        json.Should().Contain("2024-03-15");
+    }
+
+    private static JsonSerializerOptions GetJsonOptions()
+    {
+        var field = typeof(CurrencyConverterClient)
+            .GetField("JsonOptions", BindingFlags.NonPublic | BindingFlags.Static);
+        return (JsonSerializerOptions)field!.GetValue(null)!;
     }
 }

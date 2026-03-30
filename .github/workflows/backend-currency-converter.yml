@@ -25,9 +25,6 @@ env:
   CLIENT_CSPROJ: Practice.Backend.CurrencyConverter/src/Client/src/Client.csproj
 
 jobs:
-  # ──────────────────────────────────────────────
-  # CI: build + unit/integration-free tests (PRs and pushes)
-  # ──────────────────────────────────────────────
   build-and-test:
     name: Build & Test
     runs-on: ubuntu-latest
@@ -97,9 +94,6 @@ jobs:
           path: ./test-results/**/*.trx
           retention-days: 7
 
-  # ──────────────────────────────────────────────
-  # Integration tests (push to develop / main only)
-  # ──────────────────────────────────────────────
   integration-tests:
     name: Integration Tests
     runs-on: ubuntu-latest
@@ -167,9 +161,6 @@ jobs:
           path: ./test-results/integration/**/*.trx
           retention-days: 7
 
-  # ──────────────────────────────────────────────
-  # NuGet publish – develop branch → pre-release
-  # ──────────────────────────────────────────────
   publish-dev:
     name: Publish NuGet (dev pre-release)
     runs-on: ubuntu-latest
@@ -214,9 +205,6 @@ jobs:
             --source https://api.nuget.org/v3/index.json \
             --skip-duplicate
 
-  # ──────────────────────────────────────────────
-  # NuGet publish – main branch → stable release
-  # ──────────────────────────────────────────────
   publish-release:
     name: Publish NuGet (stable release)
     runs-on: ubuntu-latest

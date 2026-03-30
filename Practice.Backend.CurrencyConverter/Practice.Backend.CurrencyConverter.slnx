@@ -22,6 +22,7 @@
   </Folder>
   <Folder Name="/src/Messages/">
     <Project Path="src/Messages/src/Messages.csproj" />
+    <Project Path="src/Messages/tests/Messages.Tests.csproj" />
   </Folder>
   <Folder Name="/src/WebApi/">
     <Project Path="src/WebApi/src/WebApi.csproj" />

@@ -147,6 +147,43 @@ public sealed class ServiceCollectionExtensionsSpecifications
         client.Should().BeAssignableTo<ICurrencyConverterClient>();
     }
 
+    [Fact]
+    public void AddDefaultHttpContextTokenProvider_RegistersITokenProvider()
+    {
+        var services = new ServiceCollection();
+
+        services.AddDefaultHttpContextTokenProvider();
+
+        services.Any(sd => sd.ServiceType == typeof(ITokenProvider))
+            .Should().BeTrue();
+    }
+
+    [Fact]
+    public void AddDefaultHttpContextTokenProvider_RegistersAsScoped()
+    {
+        var services = new ServiceCollection();
+
+        services.AddDefaultHttpContextTokenProvider();
+
+        services.Any(sd =>
+                sd.ServiceType == typeof(ITokenProvider) &&
+                sd.Lifetime == ServiceLifetime.Scoped)
+            .Should().BeTrue();
+    }
+
+    [Fact]
+    public void AddDefaultHttpContextTokenProvider_RegistersDefaultHttpContextTokenProviderAsImplementation()
+    {
+        var services = new ServiceCollection();
+
+        services.AddDefaultHttpContextTokenProvider();
+
+        services.Any(sd =>
+                sd.ServiceType == typeof(ITokenProvider) &&
+                sd.ImplementationType == typeof(DefaultHttpContextTokenProvider))
+            .Should().BeTrue();
+    }
+
     private static IConfiguration BuildConfiguration(string baseUrl)
         => new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>

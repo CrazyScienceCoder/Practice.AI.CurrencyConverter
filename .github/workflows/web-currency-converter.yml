@@ -21,9 +21,6 @@ defaults:
     working-directory: Practice.Web.CurrencyConverter
 
 jobs:
-  # ──────────────────────────────────────────────
-  # CI: lint + type-check + build (PRs and pushes)
-  # ──────────────────────────────────────────────
   build-and-test:
     name: Build & Test
     runs-on: ubuntu-latest

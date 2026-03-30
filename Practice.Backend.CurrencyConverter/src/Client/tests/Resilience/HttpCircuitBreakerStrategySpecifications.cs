@@ -1,5 +1,8 @@
+using System.Net;
 using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.CircuitBreaker;
 using Practice.Backend.CurrencyConverter.Client.Configuration;
 using Practice.Backend.CurrencyConverter.Client.Resilience;
 
@@ -134,5 +137,56 @@ public sealed class HttpCircuitBreakerStrategySpecifications
         var result = HttpCircuitBreakerStrategy.Create(loggerMock.Object, options);
 
         result.MinimumThroughput.Should().Be(minimumThroughput);
+    }
+
+    [Fact]
+    public async Task OnOpened_WhenInvoked_LogsError()
+    {
+        var loggerMock = new Mock<ILogger>();
+        var result = HttpCircuitBreakerStrategy.Create(loggerMock.Object, DefaultOptions);
+
+        var httpResponse = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable);
+        var outcome = Outcome.FromResult<HttpResponseMessage>(httpResponse);
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
+        var args = new OnCircuitOpenedArguments<HttpResponseMessage>(
+            context, outcome, breakDuration: TimeSpan.FromSeconds(60), isManual: false);
+
+        await result.OnOpened!(args);
+
+        loggerMock.Verify(
+            l => l.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception?>(),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+            Times.Once);
+
+        ResilienceContextPool.Shared.Return(context);
+    }
+
+    [Fact]
+    public async Task OnClosed_WhenInvoked_LogsInformation()
+    {
+        var loggerMock = new Mock<ILogger>();
+        var result = HttpCircuitBreakerStrategy.Create(loggerMock.Object, DefaultOptions);
+
+        var httpResponse = new HttpResponseMessage(HttpStatusCode.OK);
+        var outcome = Outcome.FromResult<HttpResponseMessage>(httpResponse);
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
+        var args = new OnCircuitClosedArguments<HttpResponseMessage>(context, outcome, isManual: false);
+
+        await result.OnClosed!(args);
+
+        loggerMock.Verify(
+            l => l.Log(
+                LogLevel.Information,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception?>(),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+            Times.Once);
+
+        ResilienceContextPool.Shared.Return(context);
     }
 }
