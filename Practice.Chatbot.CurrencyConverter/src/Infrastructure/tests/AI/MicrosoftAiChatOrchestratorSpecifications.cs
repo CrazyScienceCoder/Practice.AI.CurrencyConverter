@@ -62,7 +62,7 @@ public sealed partial class MicrosoftAiChatOrchestratorSpecifications
                 It.IsAny<IEnumerable<AiChatMessage>>(),
                 It.IsAny<ChatOptions?>(),
                 It.IsAny<CancellationToken>()))
-            .Returns(UpdatesWithNullAndEmptyText());
+            .Returns(UpdatesWithNullAndEmptyText(TestContext.Current.CancellationToken));
 
         var orchestrator = new Infrastructure.AI.MicrosoftAiChatOrchestrator(
             chatClientMock.Object,
@@ -98,7 +98,7 @@ public sealed partial class MicrosoftAiChatOrchestratorSpecifications
                 It.IsAny<CancellationToken>()))
             .Callback<IEnumerable<AiChatMessage>, ChatOptions?, CancellationToken>(
                 (msgs, _, _) => capturedMessages = msgs)
-            .Returns(EmptyStream());
+            .Returns(EmptyStream(TestContext.Current.CancellationToken));
 
         var orchestrator = new Infrastructure.AI.MicrosoftAiChatOrchestrator(
             chatClientMock.Object,
@@ -129,7 +129,7 @@ public sealed partial class MicrosoftAiChatOrchestratorSpecifications
                 It.IsAny<CancellationToken>()))
             .Callback<IEnumerable<AiChatMessage>, ChatOptions?, CancellationToken>(
                 (msgs, _, _) => capturedMessages = msgs)
-            .Returns(EmptyStream());
+            .Returns(EmptyStream(TestContext.Current.CancellationToken));
 
         var orchestrator = new Infrastructure.AI.MicrosoftAiChatOrchestrator(
             chatClientMock.Object,
@@ -161,7 +161,7 @@ public sealed partial class MicrosoftAiChatOrchestratorSpecifications
                 It.IsAny<CancellationToken>()))
             .Callback<IEnumerable<AiChatMessage>, ChatOptions?, CancellationToken>(
                 (msgs, _, _) => capturedMessages = msgs)
-            .Returns(EmptyStream());
+            .Returns(EmptyStream(TestContext.Current.CancellationToken));
 
         var orchestrator = new Infrastructure.AI.MicrosoftAiChatOrchestrator(
             chatClientMock.Object,
@@ -189,7 +189,7 @@ public sealed partial class MicrosoftAiChatOrchestratorSpecifications
                 It.IsAny<CancellationToken>()))
             .Callback<IEnumerable<AiChatMessage>, ChatOptions?, CancellationToken>(
                 (msgs, _, _) => capturedMessages = msgs)
-            .Returns(EmptyStream());
+            .Returns(EmptyStream(TestContext.Current.CancellationToken));
 
         var orchestrator = new Infrastructure.AI.MicrosoftAiChatOrchestrator(
             chatClientMock.Object,
@@ -216,7 +216,7 @@ public sealed partial class MicrosoftAiChatOrchestratorSpecifications
                 It.IsAny<CancellationToken>()))
             .Callback<IEnumerable<AiChatMessage>, ChatOptions?, CancellationToken>(
                 (msgs, _, _) => capturedMessages = msgs)
-            .Returns(EmptyStream());
+            .Returns(EmptyStream(TestContext.Current.CancellationToken));
 
         var orchestrator = new Infrastructure.AI.MicrosoftAiChatOrchestrator(
             chatClientMock.Object,

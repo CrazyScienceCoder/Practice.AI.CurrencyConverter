@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+          <ExcludeByFile>**/Program.cs,**/obj/**/*.generated.cs,**/*.generated.cs</ExcludeByFile>
+          <Exclude>[Practice.Backend.CurrencyConverter.WebApi]Microsoft.AspNetCore.OpenApi.Generated.*,[Practice.Backend.CurrencyConverter.WebApi]System.Runtime.CompilerServices.*,[Practice.Backend.CurrencyConverter.WebApi]Program</Exclude>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

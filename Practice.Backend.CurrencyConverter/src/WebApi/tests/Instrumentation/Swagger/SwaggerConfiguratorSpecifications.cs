@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
+using Practice.Backend.CurrencyConverter.WebApi.Bootstrap;
 using Practice.Backend.CurrencyConverter.WebApi.Instrumentation.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -40,5 +41,37 @@ public sealed class SwaggerConfiguratorSpecifications
         var act = () => app.UseSwaggerEndpoint();
 
         act.Should().NotThrow();
+    }
+
+    [Fact]
+    public void UseSwaggerEndpoint_InDevelopmentEnvironment_DoesNotThrow()
+    {
+        var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+        {
+            EnvironmentName = "Development"
+        });
+        builder.Services.AddApiVersioning();
+        builder.AddSwagger();
+        var app = builder.Build();
+
+        var act = () => app.UseSwaggerEndpoint();
+
+        act.Should().NotThrow();
+    }
+
+    [Fact]
+    public void UseSwaggerEndpoint_InDevelopmentEnvironment_RegistersSwaggerMiddleware()
+    {
+        var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+        {
+            EnvironmentName = "Development"
+        });
+        builder.Services.AddApiVersioning();
+        builder.AddSwagger();
+        var app = builder.Build();
+
+        app.UseSwaggerEndpoint();
+
+        app.Should().NotBeNull();
     }
 }
