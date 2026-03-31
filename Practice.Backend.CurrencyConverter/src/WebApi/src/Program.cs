@@ -10,7 +10,7 @@ Log.Logger = SerilogConfigurator.CreateBootstrapLogger(builder.Configuration);
 try
 {
     Log.Information("Application is starting");
-    //trigger the build
+
     builder.UseSerilog();
 
     builder.AddCoreServices();
