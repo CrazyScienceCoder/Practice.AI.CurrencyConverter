@@ -29,6 +29,8 @@ A production-ready currency conversion platform built with Clean Architecture, D
 ./FullyRunAllWithOllama.ps1
 ```
 
+> **Note on local AI model:** The Ollama stack uses `lfm2.5-thinking` by default — a small, lightweight model chosen for easy local demo setup. Because of its limited size it can occasionally produce inaccurate or incomplete responses. For production-quality answers, configure an external provider (`OpenAI` or `Gemini`) via the `AI__Provider` environment variable.
+
 ### Dependencies only (for native local dev)
 
 ```powershell
@@ -50,6 +52,26 @@ A production-ready currency conversion platform built with Clean Architecture, D
 | Jaeger | http://localhost:16686 |
 | Prometheus | http://localhost:9090 |
 | OpenSearch Dashboards | http://localhost:5601 |
+
+---
+
+## Screenshots
+
+### Login (Keycloak)
+
+![Login page](docs/screenshots/login%20page.jpg)
+
+### Chat UI — new conversation
+
+![New chat screen](docs/screenshots/new%20chat%20screen%20having%20some%20template%20messages.jpg)
+
+### Chat UI — live exchange rate query
+
+![Asking 1 USD to EUR](docs/screenshots/request%201%20usd%20to%20eur%20in%20ai%20chat.jpg)
+
+### Copying the JWT token for direct API access
+
+![Copy Token button](docs/screenshots/Copy%20Token%20button.jpg)
 
 ---
 
@@ -174,8 +196,20 @@ Test coverage reports are also available in CI without any local setup — open 
 
 - Frankfurter is the single exchange-rate source; the factory pattern allows adding providers without changing existing code.
 - Forbidden currencies (TRY, PLN, THB, MXN) are enforced for both conversion and latest-rate requests.
-- Historical rate pagination is handled in-process (Frankfurter returns the full period; results are sliced server-side).
+- Historical rate pagination is computed server-side: business days for the full requested range are calculated locally, then only the date window for the requested page is forwarded to Frankfurter — avoiding over-fetching.
 - Keycloak is the identity provider for demo purposes only and is fully replaceable.
+
+### Endpoint Authorization
+
+| Service | Method | Route | Required Role |
+|---|---|---|---|
+| Currency API | `GET` | `/api/v1/exchange-rate/latest` | `currency:read` |
+| Currency API | `GET` | `/api/v1/exchange-rate/conversion` | `currency:read` |
+| Currency API | `GET` | `/api/v1/exchange-rate/historical` | `currency:admin` |
+| AI Agent API | `POST` | `/api/v1/chat/message` | `ai:chat` |
+| AI Agent API | `GET` | `/api/v1/chat/{conversationId}/history` | `ai:chat` |
+
+The `currency:admin` role is intentionally restricted to historical rates as this endpoint exposes broader data access (paginated multi-day ranges). Both demo users have `currency:read` and `ai:chat`; only `admin@currencyconverter.com` has `currency:admin`.
 
 ---
 
