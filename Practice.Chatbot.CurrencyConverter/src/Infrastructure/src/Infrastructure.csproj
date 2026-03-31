@@ -16,9 +16,9 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.5" />
 		<!-- Microsoft.Extensions.AI core + provider connectors -->
 		<PackageReference Include="Microsoft.Extensions.AI" Version="10.4.1" />
-		<PackageReference Include="OllamaSharp" Version="5.4.24" />
+		<PackageReference Include="OllamaSharp" Version="5.4.25" />
 		<PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.4.1" />
-		<PackageReference Include="Practice.Backend.CurrencyConverter.Client" Version="1.0.44" />
+		<PackageReference Include="Practice.Backend.CurrencyConverter.Client" Version="1.0.68" />
 	</ItemGroup>
 
 	<ItemGroup>
