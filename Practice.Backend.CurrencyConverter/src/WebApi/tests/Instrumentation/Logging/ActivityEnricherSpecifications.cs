@@ -73,8 +73,11 @@ public sealed class ActivityEnricherSpecifications
     {
         var (logEvent, propertyFactoryMock) = BuildLogEventWithPropertyFactory();
 
-        using var activity = new Activity("TestActivity");
-        activity.Start();
+        using var parentActivity = new Activity("ParentActivity");
+        parentActivity.Start();
+
+        using var childActivity = new Activity("ChildActivity");
+        childActivity.Start();
 
         try
         {
@@ -86,7 +89,8 @@ public sealed class ActivityEnricherSpecifications
         }
         finally
         {
-            activity.Stop();
+            childActivity.Stop();
+            parentActivity.Stop();
         }
     }
 
