@@ -29,7 +29,7 @@ public static class OpenTelemetryConfigurator
             })
             .WithTracing(tracing =>
             {
-                tracing.SetSampler(new TraceIdRatioBasedSampler(probability: 0.2))
+                tracing.SetSampler(new ParentBasedSampler(new TraceIdRatioBasedSampler(probability: 0.5)))
                     .AddAspNetCoreInstrumentation(options =>
                     {
                         options.RecordException = true;

@@ -18,6 +18,9 @@ public sealed class ActivityEnricher : ILogEventEnricher
 
         logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("SpanId", activity.SpanId.ToString()));
 
-        logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("ParentSpanId", activity.ParentSpanId.ToString()));
+        if (activity.ParentSpanId != default)
+        {
+            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("ParentSpanId", activity.ParentSpanId.ToString()));
+        }
     }
 }
