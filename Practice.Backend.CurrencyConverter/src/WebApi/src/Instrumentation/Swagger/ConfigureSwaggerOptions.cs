@@ -31,10 +31,10 @@ public class ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider) : 
             Description = "Enter a Keycloak JWT token. Example: Bearer {token}"
         });
 
-        options.AddSecurityRequirement(_ => new OpenApiSecurityRequirement
+        options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
         {
             {
-                new OpenApiSecuritySchemeReference(BearerSecurityScheme),
+                new OpenApiSecuritySchemeReference(BearerSecurityScheme, document),
                 []
             }
         });
