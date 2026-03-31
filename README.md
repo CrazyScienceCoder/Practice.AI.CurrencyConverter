@@ -148,7 +148,7 @@ Three workflows run on pull requests and pushes to `develop` / `main`, one per s
 | **Chatbot · Currency Converter** | Build → Unit tests → Integration tests |
 | **Web · Currency Converter** | Install → Lint → Build |
 
-Coverage summaries are posted to the GitHub Actions step summary on every run. Concurrent runs on the same branch are cancelled automatically.
+Coverage summaries are posted to the **GitHub Actions step summary** on every run — open any workflow run, select the relevant job, and scroll to the bottom of the summary to see per-layer coverage reports. Concurrent runs on the same branch are cancelled automatically.
 
 ---
 
@@ -165,6 +165,8 @@ dotnet test tests/Integration.Tests
 # With coverage report
 dotnet test --collect:"XPlat Code Coverage"
 ```
+
+Test coverage reports are also available in CI without any local setup — open the relevant **GitHub Actions** workflow run, go to the job summary, and the per-layer coverage breakdown is listed at the bottom of the page.
 
 ---
 
