@@ -4,8 +4,6 @@ namespace Practice.Chatbot.CurrencyConverter.Infrastructure.Tests.Plugins;
 
 public sealed partial class CurrencyConverterPluginSpecifications
 {
-    // ─── GetLatestExchangeRatesAsync ────────────────────────────────────────
-
     [Fact]
     public async Task GetLatestExchangeRatesAsync_ClientSucceeds_ReturnsSuccess()
     {
@@ -77,8 +75,6 @@ public sealed partial class CurrencyConverterPluginSpecifications
         result.Error.Should().NotBeNull();
     }
 
-    // ─── ConvertCurrencyAsync ────────────────────────────────────────────────
-
     [Fact]
     public async Task ConvertCurrencyAsync_ClientSucceeds_ReturnsSuccess()
     {
@@ -149,8 +145,6 @@ public sealed partial class CurrencyConverterPluginSpecifications
         result.IsSuccess.Should().BeFalse();
         result.Error.Should().NotBeNull();
     }
-
-    // ─── GetHistoricalExchangeRatesAsync ─────────────────────────────────────
 
     [Fact]
     public async Task GetHistoricalExchangeRatesAsync_ClientSucceeds_ReturnsSuccess()

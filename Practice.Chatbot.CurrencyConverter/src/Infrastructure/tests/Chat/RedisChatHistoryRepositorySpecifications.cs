@@ -9,8 +9,6 @@ public sealed partial class RedisChatHistoryRepositorySpecifications
     private const string UserId = "user-abc";
     private static readonly DateTimeOffset CreatedAt = new(2024, 1, 15, 10, 0, 0, TimeSpan.Zero);
 
-    // ─── FindAsync ────────────────────────────────────────────────────────────
-
     [Fact]
     public async Task FindAsync_CacheMiss_ReturnsNull()
     {
@@ -147,8 +145,6 @@ public sealed partial class RedisChatHistoryRepositorySpecifications
         result.Messages[0].Content.Should().Be("Question?");
         result.Messages[1].Content.Should().Be("Answer.");
     }
-
-    // ─── SaveAsync ────────────────────────────────────────────────────────────
 
     [Fact]
     public async Task SaveAsync_Always_CallsSetAsyncOnCacheOnce()

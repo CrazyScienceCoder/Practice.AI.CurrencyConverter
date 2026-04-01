@@ -23,10 +23,10 @@ A production-ready currency conversion platform built with Clean Architecture, D
 
 ```powershell
 # Build & start all services (including UI, AI agent, observability stack)
-./FullyRunAll.ps1
+./Start-FullStack.ps1           # uses docker-compose.full-stack.yml
 
 # Or with local Ollama LLM (no external AI provider needed)
-./FullyRunAllWithOllama.ps1
+./Start-FullStack-Ollama.ps1    # uses docker-compose.ollama.yml
 ```
 
 > **Note on local AI model:** The Ollama stack uses `lfm2.5-thinking` by default — a small, lightweight model chosen for easy local demo setup. Because of its limited size it can occasionally produce inaccurate or incomplete responses. For production-quality answers, configure an external provider (`OpenAI` or `Gemini`) via the `AI__Provider` environment variable.
@@ -34,7 +34,7 @@ A production-ready currency conversion platform built with Clean Architecture, D
 ### Dependencies only (for native local dev)
 
 ```powershell
-./RunDepsOnly.ps1
+./Start-Deps.ps1    # uses docker-compose.deps.yml
 # Then run each service individually with dotnet run / npm run dev
 ```
 
