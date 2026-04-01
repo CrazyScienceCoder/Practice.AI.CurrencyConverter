@@ -11,15 +11,9 @@ COPY ["Practice.Chatbot.CurrencyConverter/src/Application/src/Application.csproj
 COPY ["Practice.Chatbot.CurrencyConverter/src/Infrastructure/src/Infrastructure.csproj", "Practice.Chatbot.CurrencyConverter/src/Infrastructure/src/"]
 COPY ["Practice.Chatbot.CurrencyConverter/src/WebApi/src/WebApi.csproj", "Practice.Chatbot.CurrencyConverter/src/WebApi/src/"]
 
-# Backend Client cross-project reference
-COPY ["Practice.Backend.CurrencyConverter/src/Client/src/Client.csproj", "Practice.Backend.CurrencyConverter/src/Client/src/"]
-COPY ["Practice.Backend.CurrencyConverter/src/Messages/src/Messages.csproj", "Practice.Backend.CurrencyConverter/src/Messages/src/"]
-
 RUN dotnet restore "Practice.Chatbot.CurrencyConverter/src/WebApi/src/WebApi.csproj"
 
 COPY Practice.Chatbot.CurrencyConverter/ Practice.Chatbot.CurrencyConverter/
-COPY Practice.Backend.CurrencyConverter/src/Client/ Practice.Backend.CurrencyConverter/src/Client/
-COPY Practice.Backend.CurrencyConverter/src/Messages/ Practice.Backend.CurrencyConverter/src/Messages/
 
 RUN dotnet build "Practice.Chatbot.CurrencyConverter/src/WebApi/src/WebApi.csproj" -c Release -o /app/build
 
