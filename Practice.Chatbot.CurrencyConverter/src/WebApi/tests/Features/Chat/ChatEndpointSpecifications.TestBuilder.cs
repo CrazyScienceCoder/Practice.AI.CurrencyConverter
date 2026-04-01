@@ -1,13 +1,16 @@
-using System.Runtime.CompilerServices;
-using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Practice.Chatbot.CurrencyConverter.Application.Chat.GetHistory;
 using Practice.Chatbot.CurrencyConverter.Application.Chat.Send;
+using Practice.Chatbot.CurrencyConverter.Application.Shared;
+using Practice.Chatbot.CurrencyConverter.WebApi.ActionResultBuilders.Builders;
+using Practice.Chatbot.CurrencyConverter.WebApi.ActionResultBuilders.Factories;
 using Practice.Chatbot.CurrencyConverter.WebApi.Features.Chat;
 using Practice.Chatbot.CurrencyConverter.WebApi.Features.Chat.SendMessage;
+using System.Runtime.CompilerServices;
+using System.Security.Claims;
 
 namespace Practice.Chatbot.CurrencyConverter.WebApi.Tests.Features.Chat;
 
@@ -16,6 +19,7 @@ public partial class ChatEndpointSpecifications
     private sealed class TestBuilder
     {
         public readonly Mock<IMediator> MediatorMock = new();
+        public readonly Mock<IActionResultBuilderFactory> ActionResultBuilderFactoryMock = new();
 
         public readonly SendMessageRequest DefaultSendRequest = new(
             ConversationId: "550e8400-e29b-41d4-a716-446655440000",
@@ -44,6 +48,11 @@ public partial class ChatEndpointSpecifications
             MediatorMock
                 .Setup(m => m.Send(It.IsAny<GetChatHistoryQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(GetChatHistoryQueryResponse.Success(data: DefaultHistoryResponse));
+
+            ActionResultBuilderFactoryMock.Setup(s =>
+                    s.Create(It.IsAny<Result<GetChatHistoryQueryResult, GetChatHistoryQueryResponse>>()))
+                .Returns(new SuccessActionResultBuilder());
+
             return this;
         }
 
@@ -66,7 +75,7 @@ public partial class ChatEndpointSpecifications
                 httpContext.User = new ClaimsPrincipal(new ClaimsIdentity());
             }
 
-            var endpoint = new ChatEndpoint(MediatorMock.Object)
+            var endpoint = new ChatEndpoint(MediatorMock.Object, ActionResultBuilderFactoryMock.Object)
             {
                 ControllerContext = new ControllerContext
                 {
