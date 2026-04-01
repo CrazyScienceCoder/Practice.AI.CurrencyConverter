@@ -1,4 +1,5 @@
 using Practice.Chatbot.CurrencyConverter.Domain.Chat;
+using Practice.Chatbot.CurrencyConverter.Domain.Exceptions;
 
 namespace Practice.Chatbot.CurrencyConverter.Domain.Tests.Chat;
 
@@ -40,7 +41,7 @@ public sealed class ConversationIdSpecifications
     {
         var act = () => ConversationId.From(invalidValue);
 
-        act.Should().ThrowExactly<ArgumentException>()
+        act.Should().ThrowExactly<InvalidConversationIdException>()
             .Which.ParamName.Should().Be("value");
     }
 
@@ -51,7 +52,7 @@ public sealed class ConversationIdSpecifications
 
         var act = () => ConversationId.From(invalidValue);
 
-        act.Should().ThrowExactly<ArgumentException>()
+        act.Should().ThrowExactly<InvalidConversationIdException>()
             .Which.Message.Should().Contain("is not a valid ConversationId");
     }
 
@@ -83,5 +84,26 @@ public sealed class ConversationIdSpecifications
         var id2 = ConversationId.New();
 
         id1.Should().NotBe(id2);
+    }
+
+    [Fact]
+    public void ImplicitOperator_FromGuid_CreatesConversationId()
+    {
+        var guid = Guid.NewGuid();
+
+        ConversationId id = guid;
+
+        id.Value.Should().Be(guid);
+    }
+
+    [Fact]
+    public void ImplicitOperator_ToGuid_ReturnsUnderlyingValue()
+    {
+        var guid = Guid.NewGuid();
+        var id = new ConversationId(guid);
+
+        Guid result = id;
+
+        result.Should().Be(guid);
     }
 }

@@ -10,13 +10,16 @@ public partial class GetChatHistoryQueryHandlerSpecifications
     private class TestBuilder
     {
         public readonly Mock<IChatHistoryRepository> RepositoryMock = new();
+        private readonly Mock<ILogger<GetChatHistoryQueryHandler>> _loggerMock = new();
 
         private static readonly ConversationId DefaultConversationId = ConversationId.New();
         private const string DefaultUserId = "user-123";
 
-        public readonly GetChatHistoryQuery DefaultQuery = new(
-            DefaultConversationId.ToString(),
-            DefaultUserId);
+        public readonly GetChatHistoryQuery DefaultQuery = new()
+        {
+            ConversationId = DefaultConversationId.ToString(),
+            UserId = DefaultUserId
+        };
 
         public TestBuilder SetupConversationFound()
         {
@@ -69,6 +72,6 @@ public partial class GetChatHistoryQueryHandlerSpecifications
         }
 
         public GetChatHistoryQueryHandler Build()
-            => new(RepositoryMock.Object);
+            => new(RepositoryMock.Object, _loggerMock.Object);
     }
 }

@@ -1,4 +1,5 @@
 using Practice.Chatbot.CurrencyConverter.Domain.Chat;
+using Practice.Chatbot.CurrencyConverter.Domain.Exceptions;
 
 namespace Practice.Chatbot.CurrencyConverter.Domain.Tests.Chat;
 
@@ -56,7 +57,7 @@ public sealed class ConversationSpecifications
     {
         var act = () => Conversation.Start(userId);
 
-        act.Should().ThrowExactly<ArgumentException>()
+        act.Should().ThrowExactly<InvalidUserIdException>()
             .Which.ParamName.Should().Be("userId");
     }
 
@@ -65,7 +66,7 @@ public sealed class ConversationSpecifications
     {
         var act = () => Conversation.Start(string.Empty);
 
-        act.Should().ThrowExactly<ArgumentException>()
+        act.Should().ThrowExactly<InvalidUserIdException>()
             .Which.Message.Should().Contain("UserId cannot be empty.");
     }
 
@@ -104,7 +105,7 @@ public sealed class ConversationSpecifications
     {
         var act = () => Conversation.StartWithId(ConversationId.New(), userId);
 
-        act.Should().ThrowExactly<ArgumentException>()
+        act.Should().ThrowExactly<InvalidUserIdException>()
             .Which.ParamName.Should().Be("userId");
     }
 
@@ -113,7 +114,7 @@ public sealed class ConversationSpecifications
     {
         var act = () => Conversation.StartWithId(ConversationId.New(), string.Empty);
 
-        act.Should().ThrowExactly<ArgumentException>()
+        act.Should().ThrowExactly<InvalidUserIdException>()
             .Which.Message.Should().Contain("UserId cannot be empty.");
     }
 

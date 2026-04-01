@@ -152,6 +152,22 @@ public partial class SendChatMessageCommandHandlerSpecifications
         receivedChunks.Should().ContainInOrder(expectedChunks);
     }
 
+    [Fact]
+    public async Task Handle_InvalidConversationId_ThrowsDomainValidationException()
+    {
+        var handler = new TestBuilder().Build();
+        var command = new Application.Chat.Send.SendChatMessageCommand
+        {
+            ConversationId = "not-a-valid-guid",
+            UserId = "user-123",
+            UserMessage = "Hello"
+        };
+
+        var act = async () => await CollectChunksAsync(handler, command);
+
+        await act.Should().ThrowAsync<Domain.Exceptions.DomainValidationException>();
+    }
+
     private static async Task<List<string>> CollectChunksAsync(
         Application.Chat.Send.SendChatMessageCommandHandler handler,
         Application.Chat.Send.SendChatMessageCommand command)

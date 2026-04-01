@@ -1,3 +1,6 @@
+using Ardalis.GuardClauses;
+using Practice.Chatbot.CurrencyConverter.Domain.Exceptions;
+
 namespace Practice.Chatbot.CurrencyConverter.Domain.Chat;
 
 /// <summary>Immutable value object representing a single message in a conversation.</summary>
@@ -9,8 +12,8 @@ public sealed record ChatMessage
 
     private ChatMessage(MessageRole role, string content, DateTimeOffset timestamp)
     {
-        if (string.IsNullOrWhiteSpace(content))
-            throw new ArgumentException("Message content cannot be empty.", nameof(content));
+        Guard.Against.NullOrWhiteSpace(content,
+            exceptionCreator: () => new InvalidMessageContentException("Message content cannot be empty.", nameof(content)));
 
         Role = role;
         Content = content;

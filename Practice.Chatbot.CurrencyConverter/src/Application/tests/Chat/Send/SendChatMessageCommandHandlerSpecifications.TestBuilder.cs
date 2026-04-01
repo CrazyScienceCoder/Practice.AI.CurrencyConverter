@@ -19,19 +19,23 @@ public partial class SendChatMessageCommandHandlerSpecifications
         private static readonly string DefaultConversationId = Guid.NewGuid().ToString();
         private const string DefaultUserId = "user-123";
 
-        public readonly SendChatMessageCommand NewConversationCommand = new(
-            ConversationId: null,
-            UserId: DefaultUserId,
-            UserMessage: "What is the USD exchange rate?");
+        public readonly SendChatMessageCommand NewConversationCommand = new()
+        {
+            ConversationId = null,
+            UserId = DefaultUserId,
+            UserMessage = "What is the USD exchange rate?"
+        };
 
         public readonly SendChatMessageCommand ExistingConversationCommand;
 
         public TestBuilder()
         {
-            ExistingConversationCommand = new(
-                ConversationId: DefaultConversationId,
-                UserId: DefaultUserId,
-                UserMessage: "What about EUR?");
+            ExistingConversationCommand = new()
+            {
+                ConversationId = DefaultConversationId,
+                UserId = DefaultUserId,
+                UserMessage = "What about EUR?"
+            };
         }
 
         public TestBuilder SetupNewConversation(params string[] replyChunks)
@@ -93,7 +97,9 @@ public partial class SendChatMessageCommandHandlerSpecifications
         private static async IAsyncEnumerable<string> ToAsyncEnumerable(string[] chunks)
         {
             foreach (var chunk in chunks)
+            {
                 yield return chunk;
+            }
         }
     }
 }

@@ -31,7 +31,10 @@ public sealed class RedisChatHistoryRepository(
         }
 
         var dto = JsonSerializer.Deserialize<ConversationDto>(json, JsonOptions);
-        if (dto is null) return null;
+        if (dto is null)
+        {
+            return null;
+        }
 
         var messages = dto.Messages.Select(m => m.Role switch
         {

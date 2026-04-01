@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Practice.Chatbot.CurrencyConverter.Application.Chat.GetHistory;
 using Practice.Chatbot.CurrencyConverter.Application.Chat.Send;
+using Practice.Chatbot.CurrencyConverter.Application.Shared;
 using Practice.Chatbot.CurrencyConverter.WebApi.Extensions;
 using Practice.Chatbot.CurrencyConverter.WebApi.Features.Chat.SendMessage;
 using Practice.Chatbot.CurrencyConverter.WebApi.Instrumentation.Authentication;
@@ -28,10 +29,12 @@ public sealed class ChatEndpoint(IMediator mediator) : ControllerBase
     {
         var userId = User.GetUserId();
 
-        var command = new SendChatMessageCommand(
-            ConversationId: request.ConversationId,
-            UserId: userId,
-            UserMessage: request.Message);
+        var command = new SendChatMessageCommand
+        {
+            ConversationId = request.ConversationId,
+            UserId = userId,
+            UserMessage = request.Message
+        };
 
         Response.Headers["Content-Type"] = "text/event-stream";
         Response.Headers["Cache-Control"] = "no-cache";
@@ -53,7 +56,8 @@ public sealed class ChatEndpoint(IMediator mediator) : ControllerBase
     }
 
     [HttpGet(ChatRoutes.HistoryPath)]
-    [ProducesResponseType(typeof(GetChatHistoryQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetChatHistoryQueryResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetHistoryAsync(
@@ -62,8 +66,25 @@ public sealed class ChatEndpoint(IMediator mediator) : ControllerBase
     {
         var userId = User.GetUserId();
 
-        var query = new GetChatHistoryQuery(conversationId, userId);
+        var query = new GetChatHistoryQuery { ConversationId = conversationId, UserId = userId };
         var result = await mediator.Send(query, cancellationToken);
-        return Ok(result);
+
+        if (result.IsSuccess)
+        {
+            return Ok(result.Data);
+        }
+
+        if (result.ErrorType == ErrorType.ValidationError)
+        {
+            return BadRequest(result.Message);
+        }
+
+        // For NotFound and authorization failures return 200 with empty history
+        // to avoid revealing whether the conversation exists
+        return Ok(new GetChatHistoryQueryResult
+        {
+            ConversationId = conversationId,
+            Messages = []
+        });
     }
 }
