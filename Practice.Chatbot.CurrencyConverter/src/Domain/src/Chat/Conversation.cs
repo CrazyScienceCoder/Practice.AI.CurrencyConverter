@@ -1,3 +1,6 @@
+using Ardalis.GuardClauses;
+using Practice.Chatbot.CurrencyConverter.Domain.Exceptions;
+
 namespace Practice.Chatbot.CurrencyConverter.Domain.Chat;
 
 public sealed class Conversation
@@ -13,36 +16,34 @@ public sealed class Conversation
 
     private Conversation(ConversationId id, string userId, DateTimeOffset createdAt)
     {
+        Guard.Against.NullOrWhiteSpace(userId,
+            exceptionCreator: () => new InvalidUserIdException("UserId cannot be empty.", nameof(userId)));
+
         Id = id;
         UserId = userId;
         CreatedAt = createdAt;
         LastActivityAt = createdAt;
     }
 
-    public static Conversation Start(string userId)
-    {
-        if (string.IsNullOrWhiteSpace(userId))
-            throw new ArgumentException("UserId cannot be empty.", nameof(userId));
+    public static Conversation Start(string userId) =>
+        new(ConversationId.New(), userId, DateTimeOffset.UtcNow);
 
-        return new Conversation(ConversationId.New(), userId, DateTimeOffset.UtcNow);
-    }
-
-    public static Conversation StartWithId(ConversationId id, string userId)
-    {
-        if (string.IsNullOrWhiteSpace(userId))
-            throw new ArgumentException("UserId cannot be empty.", nameof(userId));
-
-        return new Conversation(id, userId, DateTimeOffset.UtcNow);
-    }
+    public static Conversation StartWithId(ConversationId id, string userId) =>
+        new(id, userId, DateTimeOffset.UtcNow);
 
     public static Conversation Reconstitute(ConversationId id, string userId, DateTimeOffset createdAt,
         IEnumerable<ChatMessage> messages)
     {
         var conversation = new Conversation(id, userId, createdAt);
-        conversation._messages.AddRange(messages);
-        conversation.LastActivityAt = messages.Any()
-            ? messages.Max(m => m.Timestamp)
+
+        var chatMessages = messages as ChatMessage[] ?? messages.ToArray();
+
+        conversation._messages.AddRange(chatMessages);
+
+        conversation.LastActivityAt = chatMessages.Length != 0
+            ? chatMessages.Max(m => m.Timestamp)
             : createdAt;
+
         return conversation;
     }
 

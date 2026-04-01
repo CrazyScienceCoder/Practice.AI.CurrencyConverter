@@ -12,7 +12,9 @@ public sealed partial class MicrosoftAiChatOrchestratorSpecifications
     {
         var conversation = Conversation.Start("user-123");
         foreach (var action in configure)
+        {
             action(conversation);
+        }
         return conversation;
     }
 

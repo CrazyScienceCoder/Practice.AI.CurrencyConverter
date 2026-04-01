@@ -1,6 +1,6 @@
-using MediatR;
 using Microsoft.Extensions.Logging;
 using Practice.Chatbot.CurrencyConverter.Application.Abstractions;
+using Practice.Chatbot.CurrencyConverter.Application.Shared;
 using Practice.Chatbot.CurrencyConverter.Domain.Chat;
 using Practice.Chatbot.CurrencyConverter.Domain.Contracts;
 
@@ -10,9 +10,9 @@ public sealed class SendChatMessageCommandHandler(
     IChatHistoryRepository repository,
     IChatOrchestrator orchestrator,
     ILogger<SendChatMessageCommandHandler> logger)
-    : IStreamRequestHandler<SendChatMessageCommand, string>
+    : StreamingHandlerBase<SendChatMessageCommand>(logger)
 {
-    public async IAsyncEnumerable<string> Handle(
+    protected override async IAsyncEnumerable<string> ExecuteAsync(
         SendChatMessageCommand command,
         [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken)
     {
