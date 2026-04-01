@@ -145,6 +145,24 @@ WebApi → Application → Domain
 
 Each layer has its own `src/` and `tests/` project. Infrastructure depends only on abstractions defined in Domain, keeping the core fully testable without external dependencies.
 
+### AI Agent API — Layers _(bonus)_
+
+```
+WebApi → Application → Domain
+              ↓
+         Infrastructure → Microsoft.Extensions.AI (LLM)
+              ↓                     ↓
+           Redis              CurrencyConverterPlugin
+         (chat history)       (AI tool → Currency API)
+```
+
+The AI Agent API follows the same Clean Architecture layering as the Currency API. Its Infrastructure layer wires up two AI tools that the LLM can invoke during a conversation:
+
+- **`CurrencyConverterPlugin`** — calls the Currency API using the [published `Client` NuGet package](Practice.Backend.CurrencyConverter/src/Client/) (`ICurrencyConverterClient`), giving the LLM access to latest rates, conversion, and historical data without duplicating any HTTP logic.
+- **`DatePlugin`** — supplies the LLM with the current date, enabling accurate reasoning about historical queries.
+
+Conversation history is persisted per-session in Redis so the agent maintains context across multiple turns. The LLM provider is swappable at runtime via `AI__Provider` (supports `Ollama`, `OpenAI`, and `Gemini`).
+
 ---
 
 ## Production Readiness
