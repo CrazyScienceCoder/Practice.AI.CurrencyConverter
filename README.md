@@ -180,13 +180,14 @@ Conversation history is persisted per-session in Redis so the agent maintains co
 
 ## CI/CD (GitHub Actions)
 
-Three workflows run on pull requests and pushes to `develop` / `main`, one per service:
+Four workflows run on pull requests and pushes to `develop` / `main`:
 
-| Workflow | Jobs |
-|---|---|
-| **Backend · Currency Converter** | Build → Unit tests (per layer, with coverage) → Integration tests (Redis service) → Publish `Client` + `Messages` NuGet packages (pre-release on `develop`, stable on `main` + GitHub Release) |
-| **Chatbot · Currency Converter** | Build → Unit tests → Integration tests |
-| **Web · Currency Converter** | Install → Lint → Build |
+| Workflow | Triggers on | Jobs |
+|---|---|---|
+| **Backend · Currency Converter** | Changes under `Practice.Backend.CurrencyConverter/` | Build → Unit tests (per layer, with coverage) → Integration tests (Redis service) → Publish `Client` + `Messages` NuGet packages (pre-release on `develop`, stable on `main` + GitHub Release) |
+| **Chatbot · Currency Converter** | Changes under `Practice.Chatbot.CurrencyConverter/` | Build → Unit tests → Integration tests |
+| **Web · Currency Converter** | Changes under `Practice.Web.CurrencyConverter/` | Install → Lint → Build |
+| **Root · Infra** | Changes to root `*.md`, `*.ps1`, `docker-compose*.yml`, `keycloak/`, `docs/`, or the workflow file itself | No-op acknowledgement (infra-only change, no service build needed) |
 
 Coverage summaries are posted to the **GitHub Actions step summary** on every run — open any workflow run, select the relevant job, and scroll to the bottom of the summary to see per-layer coverage reports. Concurrent runs on the same branch are cancelled automatically.
 
