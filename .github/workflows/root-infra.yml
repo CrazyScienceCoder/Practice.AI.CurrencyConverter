@@ -12,8 +12,8 @@ on:
       - 'docs/**'
 
 jobs:
-  ok:
-    name: Infra OK
+  build-and-test:
+    name: Build & Test
     runs-on: ubuntu-latest
     steps:
       - run: echo "Root/infra change, no service build needed"
