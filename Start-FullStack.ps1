@@ -1,4 +1,4 @@
-docker compose down --remove-orphans
+docker compose -f docker-compose.full-stack.yml down --remove-orphans
 docker container prune -f
 
 $images = @("currency-api-image", "ai-agent-api-image", "frontend-image")
@@ -20,4 +20,4 @@ foreach ($imageName in $images) {
     }
 }
 
-docker compose up -d
+docker compose -f docker-compose.full-stack.yml up -d

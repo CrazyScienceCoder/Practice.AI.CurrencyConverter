@@ -34,11 +34,9 @@ public class WebApplicationExtensionsSpecifications
             .Should().NotBeNull();
     }
 
-    /// <summary>
-    /// Creates a builder with cleared config sources so that appsettings.json
-    /// (copied to test output) does not load the OpenSearch Serilog sink with
-    /// an unresolved %OPENSEARCH_NODE_URIS% URI placeholder.
-    /// </summary>
+    // Creates a builder with cleared config sources so that appsettings.json
+    // (copied to test output) does not load the OpenSearch Serilog sink with
+    // an unresolved %OPENSEARCH_NODE_URIS% URI placeholder.
     private static WebApplicationBuilder CreateBuilderWithFullConfig()
     {
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions
