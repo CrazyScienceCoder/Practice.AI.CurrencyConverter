@@ -8,7 +8,7 @@ on:
       - '*.ps1'
       - 'docker-compose*.yml'
       - 'keycloak/**'
-      - '.github/workflows/*.yml'
+      - '.github/workflows/root-infra.yml'
       - 'docs/**'
 
 jobs:
