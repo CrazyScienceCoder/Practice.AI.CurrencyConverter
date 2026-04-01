@@ -138,17 +138,6 @@ public sealed class AiClientConfiguratorSpecifications
         functions.Should().HaveCount(4);
     }
 
-    [Fact]
-    public void AddAiClient_OllamaProvider_ReturnsSameServiceCollection()
-    {
-        var services = new ServiceCollection();
-        var config = BuildConfig("Ollama", "llama3", ollama: "http://localhost:11434");
-
-        var result = services.AddAiClient(config);
-
-        result.Should().BeSameAs(services);
-    }
-
     private static IConfiguration BuildConfig(
         string provider,
         string modelId,

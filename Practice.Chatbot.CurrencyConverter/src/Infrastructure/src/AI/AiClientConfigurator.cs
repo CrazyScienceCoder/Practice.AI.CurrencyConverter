@@ -6,19 +6,19 @@ using OllamaSharp;
 using OpenAI;
 using System.ClientModel;
 using Practice.Backend.CurrencyConverter.Client;
-using Practice.Chatbot.CurrencyConverter.Infrastructure.Configuration;
+using Practice.Chatbot.CurrencyConverter.Infrastructure.Configurations;
 using Practice.Chatbot.CurrencyConverter.Infrastructure.Plugins;
 
 namespace Practice.Chatbot.CurrencyConverter.Infrastructure.AI;
 
 public static class AiClientConfigurator
 {
-    public static IServiceCollection AddAiClient(
+    public static void AddAiClient(
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var aiConfig = configuration.GetSection(AiConfiguration.SectionName).Get<AiConfiguration>()
-                       ?? throw new InvalidOperationException($"Missing configuration section '{AiConfiguration.SectionName}'.");
+        var aiConfig = configuration.GetRequiredSection(AiConfiguration.SectionName).Get<AiConfiguration>()
+                       ?? throw new InvalidOperationException($"Missing or invalid configuration section '{AiConfiguration.SectionName}'.");
 
         services.AddTransient(sp =>
         {
@@ -59,8 +59,6 @@ public static class AiClientConfigurator
 
         services.AddChatClient(CreateInnerClient(aiConfig))
             .UseFunctionInvocation();
-
-        return services;
     }
 
     private static IChatClient CreateInnerClient(AiConfiguration config)

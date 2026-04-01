@@ -7,26 +7,42 @@ public sealed class MessageRoleSpecifications
     [Fact]
     public void System_HasValueZero()
     {
-        ((int)MessageRole.System).Should().Be(0);
+        MessageRole.System.Value.Should().Be(0);
     }
 
     [Fact]
     public void User_HasValueOne()
     {
-        ((int)MessageRole.User).Should().Be(1);
+        MessageRole.User.Value.Should().Be(1);
     }
 
     [Fact]
     public void Assistant_HasValueTwo()
     {
-        ((int)MessageRole.Assistant).Should().Be(2);
+        MessageRole.Assistant.Value.Should().Be(2);
     }
 
     [Fact]
     public void MessageRole_Always_HasExactlyThreeValues()
     {
-        var values = Enum.GetValues<MessageRole>();
+        MessageRole.List.Should().HaveCount(3);
+    }
 
-        values.Should().HaveCount(3);
+    [Fact]
+    public void System_HasExpectedName()
+    {
+        MessageRole.System.Name.Should().Be(nameof(MessageRole.System));
+    }
+
+    [Fact]
+    public void User_HasExpectedName()
+    {
+        MessageRole.User.Name.Should().Be(nameof(MessageRole.User));
+    }
+
+    [Fact]
+    public void Assistant_HasExpectedName()
+    {
+        MessageRole.Assistant.Name.Should().Be(nameof(MessageRole.Assistant));
     }
 }

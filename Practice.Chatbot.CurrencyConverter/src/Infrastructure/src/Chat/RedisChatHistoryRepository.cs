@@ -1,46 +1,35 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Practice.Chatbot.CurrencyConverter.Domain.Chat;
 using Practice.Chatbot.CurrencyConverter.Domain.Contracts;
+using Practice.Chatbot.CurrencyConverter.Infrastructure.Configurations;
+using Practice.Chatbot.CurrencyConverter.Infrastructure.Extensions;
 
 namespace Practice.Chatbot.CurrencyConverter.Infrastructure.Chat;
 
 public sealed class RedisChatHistoryRepository(
     IDistributedCache cache,
+    IOptions<ChatConfiguration> chatOptions,
     ILogger<RedisChatHistoryRepository> logger)
     : IChatHistoryRepository
 {
-    private static readonly TimeSpan Ttl = TimeSpan.FromHours(24);
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        Converters = { new JsonStringEnumConverter() }
-    };
-
     private static string CacheKey(ConversationId id) => $"chat:{id}";
 
     public async Task<Conversation?> FindAsync(ConversationId id, CancellationToken cancellationToken = default)
     {
-        var json = await cache.GetStringAsync(CacheKey(id), cancellationToken);
-        if (json is null)
+        var dto = await cache.GetAsync<ConversationDto>(CacheKey(id), logger, cancellationToken);
+        if (dto is null)
         {
             logger.LogDebug("Conversation {ConversationId} not found in cache", id);
             return null;
         }
 
-        var dto = JsonSerializer.Deserialize<ConversationDto>(json, JsonOptions);
-        if (dto is null)
+        var messages = dto.Messages.Select(m =>
         {
-            return null;
-        }
-
-        var messages = dto.Messages.Select(m => m.Role switch
-        {
-            MessageRole.User => ChatMessage.UserMessage(m.Content),
-            MessageRole.Assistant => ChatMessage.AssistantMessage(m.Content),
-            _ => ChatMessage.SystemMessage(m.Content)
+            if (m.Role == MessageRole.User) return ChatMessage.UserMessage(m.Content);
+            if (m.Role == MessageRole.Assistant) return ChatMessage.AssistantMessage(m.Content);
+            return ChatMessage.SystemMessage(m.Content);
         });
 
         return Conversation.Reconstitute(
@@ -59,13 +48,12 @@ public sealed class RedisChatHistoryRepository(
             conversation.Messages.Select(m => new MessageDto(m.Role, m.Content, m.Timestamp)).ToList()
         );
 
-        var json = JsonSerializer.Serialize(dto, JsonOptions);
+        var entryOptions = new DistributedCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = chatOptions.Value.ConversationTtl
+        };
 
-        await cache.SetStringAsync(
-            CacheKey(conversation.Id),
-            json,
-            new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = Ttl },
-            cancellationToken);
+        await cache.SetAsync(CacheKey(conversation.Id), dto, entryOptions, logger, cancellationToken);
 
         logger.LogDebug("Saved conversation {ConversationId} with {Count} messages",
             conversation.Id, conversation.Messages.Count);

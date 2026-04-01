@@ -1,9 +1,10 @@
+using Ardalis.SmartEnum;
+
 namespace Practice.Chatbot.CurrencyConverter.Domain.Chat;
 
-/// <summary>Represents the author role of a chat message.</summary>
-public enum MessageRole
+public sealed class MessageRole(string name, int value) : SmartEnum<MessageRole>(name, value)
 {
-    System = 0,
-    User = 1,
-    Assistant = 2
+    public static readonly MessageRole System = new(nameof(System), 0);
+    public static readonly MessageRole User = new(nameof(User), 1);
+    public static readonly MessageRole Assistant = new(nameof(Assistant), 2);
 }
