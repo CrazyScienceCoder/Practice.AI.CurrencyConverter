@@ -3,7 +3,6 @@ using Practice.Chatbot.CurrencyConverter.Domain.Exceptions;
 
 namespace Practice.Chatbot.CurrencyConverter.Domain.Chat;
 
-/// <summary>Immutable value object representing a single message in a conversation.</summary>
 public sealed record ChatMessage
 {
     public MessageRole Role { get; init; }

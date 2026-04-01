@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Practice.Chatbot.CurrencyConverter.WebApi.Filters;
 
-public class FluentValidationActionFilter : IAsyncActionFilter
+public sealed class FluentValidationActionFilter : IAsyncActionFilter
 {
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {

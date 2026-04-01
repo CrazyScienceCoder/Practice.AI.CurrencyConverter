@@ -18,11 +18,17 @@
 		<PackageReference Include="Microsoft.Extensions.AI" Version="10.4.1" />
 		<PackageReference Include="OllamaSharp" Version="5.4.25" />
 		<PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.4.1" />
-		<PackageReference Include="Practice.Backend.CurrencyConverter.Client" Version="1.0.68" />
+		<PackageReference Include="Practice.Backend.CurrencyConverter.Client" Version="1.0.89" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Application\src\Application.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>Practice.Chatbot.CurrencyConverter.Infrastructure.Tests</_Parameter1>
+		</AssemblyAttribute>
 	</ItemGroup>
 
 </Project>

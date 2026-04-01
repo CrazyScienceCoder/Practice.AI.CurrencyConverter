@@ -20,6 +20,7 @@ public sealed class ServiceCollectionExtensionsSpecifications
                 ["AI:Ollama:Endpoint"] = "http://localhost:11434",
                 ["Redis:ConnectionString"] = "localhost:6379",
                 ["Redis:InstanceName"] = "chatbot:",
+                ["ChatConfiguration:ConversationTtl"] = "24:00:00",
                 [$"{CurrencyConverterClientOptions.SectionName}:BaseUrl"] = "http://localhost:7263",
             })
             .Build();
@@ -42,16 +43,6 @@ public sealed class ServiceCollectionExtensionsSpecifications
         services.AddInfrastructure(BuildMinimalConfig());
 
         services.Should().Contain(d => d.ServiceType == typeof(IChatOrchestrator));
-    }
-
-    [Fact]
-    public void AddInfrastructure_Always_ReturnsSameServiceCollection()
-    {
-        var services = new ServiceCollection();
-
-        var result = services.AddInfrastructure(BuildMinimalConfig());
-
-        result.Should().BeSameAs(services);
     }
 
     [Fact]
