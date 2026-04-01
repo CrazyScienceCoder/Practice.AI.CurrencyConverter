@@ -1,0 +1,19 @@
+name: Root · Infra
+
+on:
+  pull_request:
+    branches: [develop, main]
+    paths:
+      - '*.md'
+      - '*.ps1'
+      - 'docker-compose*.yml'
+      - 'keycloak/**'
+      - '.github/workflows/*.yml'
+      - 'docs/**'
+
+jobs:
+  ok:
+    name: Infra OK
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Root/infra change, no service build needed"
