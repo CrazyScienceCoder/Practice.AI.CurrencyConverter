@@ -28,16 +28,24 @@ internal static class QueryBuilder
         };
 
         if (request.From.HasValue)
+        {
             query["From"] = request.From.Value.ToString(DateFormat);
+        }
 
         if (request.To.HasValue)
+        {
             query["To"] = request.To.Value.ToString(DateFormat);
+        }
 
         if (request.PageNumber.HasValue)
+        {
             query["PageNumber"] = request.PageNumber.Value.ToString();
+        }
 
         if (request.DaysPerPage.HasValue)
+        {
             query["DaysPerPage"] = request.DaysPerPage.Value.ToString();
+        }
 
         AddProvider(query, request.Provider);
 
@@ -61,6 +69,8 @@ internal static class QueryBuilder
     private static void AddProvider(Dictionary<string, string?> query, string? provider)
     {
         if (!string.IsNullOrWhiteSpace(provider))
+        {
             query["Provider"] = provider;
+        }
     }
 }

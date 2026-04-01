@@ -2,5 +2,8 @@ using MediatR;
 
 namespace Practice.Chatbot.CurrencyConverter.Application.Chat.GetHistory;
 
-public sealed record GetChatHistoryQuery(string ConversationId, string UserId)
-    : IRequest<GetChatHistoryQueryResponse>;
+public sealed class GetChatHistoryQuery : IRequest<GetChatHistoryQueryResponse>
+{
+    public required string ConversationId { get; init; }
+    public required string UserId { get; init; }
+}

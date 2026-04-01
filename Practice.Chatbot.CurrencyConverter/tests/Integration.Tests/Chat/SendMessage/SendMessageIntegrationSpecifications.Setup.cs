@@ -39,7 +39,9 @@ public partial class SendMessageIntegrationSpecifications(CustomWebApplicationFa
     private static async IAsyncEnumerable<string> ToAsyncEnumerable(string[] chunks)
     {
         foreach (var chunk in chunks)
+        {
             yield return chunk;
+        }
 
         await Task.CompletedTask;
     }

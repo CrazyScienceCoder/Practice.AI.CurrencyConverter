@@ -9,4 +9,8 @@
 		<RootNamespace>Practice.Chatbot.CurrencyConverter.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<PackageReference Include="Ardalis.GuardClauses" Version="5.0.0" />
+	</ItemGroup>
+
 </Project>

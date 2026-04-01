@@ -22,10 +22,11 @@ public partial class ChatEndpointSpecifications
             Message: "Hello world"
         );
 
-        public readonly GetChatHistoryQueryResponse DefaultHistoryResponse = new(
-            ConversationId: "550e8400-e29b-41d4-a716-446655440000",
-            Messages: [new ChatMessageDto("user", "Hello world", DateTimeOffset.UtcNow)]
-        );
+        public readonly GetChatHistoryQueryResult DefaultHistoryResponse = new()
+        {
+            ConversationId = "550e8400-e29b-41d4-a716-446655440000",
+            Messages = [new ChatMessageDto { Role = "user", Content = "Hello world", Timestamp = DateTimeOffset.UtcNow }]
+        };
 
         public TestBuilder SetupStreamingResponse(IEnumerable<string> chunks)
         {
@@ -42,7 +43,7 @@ public partial class ChatEndpointSpecifications
         {
             MediatorMock
                 .Setup(m => m.Send(It.IsAny<GetChatHistoryQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(DefaultHistoryResponse);
+                .ReturnsAsync(GetChatHistoryQueryResponse.Success(data: DefaultHistoryResponse));
             return this;
         }
 

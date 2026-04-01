@@ -12,7 +12,10 @@ public static class SwaggerConfigurator
 
     public static void UseSwaggerEndpoint(this WebApplication app)
     {
-        if (!app.Environment.IsDevelopment()) return;
+        if (!app.Environment.IsDevelopment())
+        {
+            return;
+        }
 
         app.UseSwagger();
         app.UseSwaggerUI(c =>

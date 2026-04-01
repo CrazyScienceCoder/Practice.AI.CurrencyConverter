@@ -1,4 +1,5 @@
 using Practice.Chatbot.CurrencyConverter.Domain.Chat;
+using Practice.Chatbot.CurrencyConverter.Domain.Exceptions;
 
 namespace Practice.Chatbot.CurrencyConverter.Domain.Tests.Chat;
 
@@ -98,7 +99,7 @@ public sealed class ChatMessageSpecifications
     {
         var act = () => ChatMessage.UserMessage(content);
 
-        act.Should().ThrowExactly<ArgumentException>()
+        act.Should().ThrowExactly<InvalidMessageContentException>()
             .Which.ParamName.Should().Be("content");
     }
 
@@ -109,7 +110,7 @@ public sealed class ChatMessageSpecifications
     {
         var act = () => ChatMessage.AssistantMessage(content);
 
-        act.Should().ThrowExactly<ArgumentException>()
+        act.Should().ThrowExactly<InvalidMessageContentException>()
             .Which.ParamName.Should().Be("content");
     }
 
@@ -120,7 +121,7 @@ public sealed class ChatMessageSpecifications
     {
         var act = () => ChatMessage.SystemMessage(content);
 
-        act.Should().ThrowExactly<ArgumentException>()
+        act.Should().ThrowExactly<InvalidMessageContentException>()
             .Which.ParamName.Should().Be("content");
     }
 
@@ -129,7 +130,7 @@ public sealed class ChatMessageSpecifications
     {
         var act = () => ChatMessage.UserMessage(string.Empty);
 
-        act.Should().ThrowExactly<ArgumentException>()
+        act.Should().ThrowExactly<InvalidMessageContentException>()
             .Which.Message.Should().Contain("Message content cannot be empty.");
     }
 

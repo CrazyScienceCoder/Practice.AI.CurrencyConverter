@@ -149,7 +149,9 @@ public sealed class HistoricalExchangeRateMapperSpecifications
         for (var date = from; date <= to; date = date.AddDays(1))
         {
             if (date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
+            {
                 continue;
+            }
 
             rates[new ExchangeDate(date)] = new Dictionary<Currency, Amount>(dailyRates);
         }
