@@ -1,10 +1,12 @@
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Practice.Chatbot.CurrencyConverter.Domain.Chat;
 using Practice.Chatbot.CurrencyConverter.Infrastructure.Chat;
+using Practice.Chatbot.CurrencyConverter.Infrastructure.Configurations;
+using Practice.Chatbot.CurrencyConverter.Infrastructure.Json;
 
 namespace Practice.Chatbot.CurrencyConverter.Infrastructure.Tests.Chat;
 
@@ -22,13 +24,14 @@ public sealed partial class RedisChatHistoryRepositorySpecifications
     private static readonly JsonSerializerOptions TestJsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        Converters = { new JsonStringEnumConverter() }
+        Converters = { new MessageRoleJsonConverter() }
     };
 
     private class TestBuilder
     {
         public Mock<IDistributedCache> CacheMock { get; } = new();
         private readonly Mock<ILogger<RedisChatHistoryRepository>> _loggerMock = new();
+        private readonly IOptions<ChatConfiguration> _chatOptions = Options.Create(new ChatConfiguration());
 
         public TestBuilder()
         {
@@ -74,6 +77,6 @@ public sealed partial class RedisChatHistoryRepositorySpecifications
             return this;
         }
 
-        public RedisChatHistoryRepository Build() => new(CacheMock.Object, _loggerMock.Object);
+        public RedisChatHistoryRepository Build() => new(CacheMock.Object, _chatOptions, _loggerMock.Object);
     }
 }

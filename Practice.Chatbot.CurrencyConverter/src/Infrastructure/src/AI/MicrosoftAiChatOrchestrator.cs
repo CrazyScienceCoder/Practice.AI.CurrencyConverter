@@ -64,8 +64,8 @@ public sealed class MicrosoftAiChatOrchestrator(
         {
             var role = msg.Role switch
             {
-                MessageRole.User => ChatRole.User,
-                MessageRole.Assistant => ChatRole.Assistant,
+                var r when r == MessageRole.User => ChatRole.User,
+                var r when r == MessageRole.Assistant => ChatRole.Assistant,
                 _ => ChatRole.User
             };
 

@@ -49,7 +49,7 @@ public partial class GetHistoryIntegrationSpecifications
     }
 
     [Fact]
-    public async Task GetHistoryAsync_WithNonExistingConversationId_Returns200WithEmptyMessages()
+    public async Task GetHistoryAsync_WithNonExistingConversationId_Returns404NotFound()
     {
         AuthorizeClient();
         var conversationId = Guid.NewGuid().ToString();
@@ -60,8 +60,7 @@ public partial class GetHistoryIntegrationSpecifications
         var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var json = JsonNode.Parse(body)!;
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        json["messages"]!.AsArray().Should().BeEmpty();
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
     [Fact]
@@ -129,7 +128,7 @@ public partial class GetHistoryIntegrationSpecifications
     }
 
     [Fact]
-    public async Task GetHistoryAsync_WithConversationOwnedByDifferentUser_Returns200WithEmptyMessages()
+    public async Task GetHistoryAsync_WithConversationOwnedByDifferentUser_Returns404NotFound()
     {
         AuthorizeClient();
         var conversationId = Guid.NewGuid().ToString();
@@ -144,7 +143,6 @@ public partial class GetHistoryIntegrationSpecifications
         var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var json = JsonNode.Parse(body)!;
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        json["messages"]!.AsArray().Should().BeEmpty();
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

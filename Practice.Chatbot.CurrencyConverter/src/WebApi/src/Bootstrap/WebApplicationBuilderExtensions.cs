@@ -14,29 +14,23 @@ public static class WebApplicationBuilderExtensions
     {
         builder.Services.AddControllers(options =>
         {
+            options.Filters.Add<ExceptionFilter>();
             options.Filters.Add<FluentValidationActionFilter>();
         });
 
-        builder.Services.AddHttpContextAccessor();
-
-        builder.Services.AddTransient<ILogEventEnricher, HttpContextEnricher>();
-
-        builder.Services.AddApiVersioning(options =>
-        {
-            options.DefaultApiVersion = new Asp.Versioning.ApiVersion(1, 0);
-            options.AssumeDefaultVersionWhenUnspecified = true;
-            options.ReportApiVersions = true;
-        }).AddApiExplorer(options =>
-        {
-            options.GroupNameFormat = "'v'VVV";
-            options.SubstituteApiVersionInUrl = true;
-        });
+        builder.Services.AddApiVersioning();
 
         builder.Services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
+
+        builder.Services.AddHttpContextAccessor();
 
         builder.Services.AddApplication();
 
         builder.Services.AddInfrastructure(builder.Configuration);
+
+        builder.Services.AddActionResultBuilders();
+
+        builder.Services.AddTransient<ILogEventEnricher, HttpContextEnricher>();
 
         builder.AddKeycloakJwtAuth();
 

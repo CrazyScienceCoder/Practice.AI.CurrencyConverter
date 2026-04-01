@@ -3,7 +3,6 @@ using Practice.Chatbot.CurrencyConverter.Domain.Exceptions;
 
 namespace Practice.Chatbot.CurrencyConverter.Domain.Chat;
 
-/// <summary>Strongly-typed identifier for a <see cref="Conversation"/>.</summary>
 public sealed record ConversationId(Guid Value)
 {
     public static ConversationId New() => new(Guid.NewGuid());

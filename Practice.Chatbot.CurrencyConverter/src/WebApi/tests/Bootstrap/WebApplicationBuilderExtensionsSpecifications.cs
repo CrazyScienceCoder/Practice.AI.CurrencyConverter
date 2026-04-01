@@ -65,7 +65,8 @@ public class WebApplicationBuilderExtensionsSpecifications
             ["CurrencyConverterClient:ApiVersion"] = "1.0",
             ["AI:Provider"] = "Ollama",
             ["AI:ModelId"] = "test-model",
-            ["AI:Ollama:Endpoint"] = "http://localhost:11434"
+            ["AI:Ollama:Endpoint"] = "http://localhost:11434",
+            ["ChatConfiguration:ConversationTtl"] = "24:00:00"
         });
         return builder;
     }
