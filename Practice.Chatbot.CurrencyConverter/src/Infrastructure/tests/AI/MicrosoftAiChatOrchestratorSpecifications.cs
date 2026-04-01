@@ -16,8 +16,6 @@ public sealed partial class MicrosoftAiChatOrchestratorSpecifications
         return conversation;
     }
 
-    // ─── StreamReplyAsync — text yielding ────────────────────────────────────
-
     [Fact]
     public async Task StreamReplyAsync_SingleChunk_YieldsSingleChunk()
     {
@@ -81,8 +79,6 @@ public sealed partial class MicrosoftAiChatOrchestratorSpecifications
             yield return new ChatResponseUpdate((ChatRole?)null, "hello");
         }
     }
-
-    // ─── StreamReplyAsync — message building ─────────────────────────────────
 
     [Fact]
     public async Task StreamReplyAsync_WithUserMessage_PassesUserRoleToClient()

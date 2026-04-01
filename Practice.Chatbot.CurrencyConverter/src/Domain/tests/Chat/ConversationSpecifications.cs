@@ -4,8 +4,6 @@ namespace Practice.Chatbot.CurrencyConverter.Domain.Tests.Chat;
 
 public sealed class ConversationSpecifications
 {
-    // Start
-
     [Fact]
     public void Start_ValidUserId_AssignsNonEmptyConversationId()
     {
@@ -71,8 +69,6 @@ public sealed class ConversationSpecifications
             .Which.Message.Should().Contain("UserId cannot be empty.");
     }
 
-    // StartWithId
-
     [Fact]
     public void StartWithId_ValidParameters_UsesProvidedConversationId()
     {
@@ -120,8 +116,6 @@ public sealed class ConversationSpecifications
         act.Should().ThrowExactly<ArgumentException>()
             .Which.Message.Should().Contain("UserId cannot be empty.");
     }
-
-    // Reconstitute
 
     [Fact]
     public void Reconstitute_WithMessages_LoadsAllMessages()
@@ -195,8 +189,6 @@ public sealed class ConversationSpecifications
         conversation.CreatedAt.Should().Be(createdAt);
     }
 
-    // AddUserMessage
-
     [Fact]
     public void AddUserMessage_ValidContent_AddsMessageToMessages()
     {
@@ -239,8 +231,6 @@ public sealed class ConversationSpecifications
         conversation.LastActivityAt.Should().BeOnOrAfter(activityBefore);
     }
 
-    // AddAssistantMessage
-
     [Fact]
     public void AddAssistantMessage_ValidContent_AddsMessageToMessages()
     {
@@ -282,8 +272,6 @@ public sealed class ConversationSpecifications
 
         conversation.LastActivityAt.Should().BeOnOrAfter(activityBefore);
     }
-
-    // Messages list
 
     [Fact]
     public void Messages_Always_ReturnsReadOnlyList()

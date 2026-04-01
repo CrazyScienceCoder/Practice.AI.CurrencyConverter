@@ -161,10 +161,8 @@ public class AuthenticationConfiguratorSpecifications
         Policies.AiChat.Should().Be("ai:chat");
     }
 
-    /// <summary>
-    /// Creates a builder with cleared configuration sources so that appsettings.json
-    /// values (copied to test output) do not interfere with the test's expected config.
-    /// </summary>
+    // Creates a builder with cleared configuration sources so that appsettings.json
+    // values (copied to test output) do not interfere with the test's expected config.
     private static WebApplicationBuilder CreateIsolatedBuilder(Dictionary<string, string?> config)
     {
         var builder = WebApplication.CreateBuilder();

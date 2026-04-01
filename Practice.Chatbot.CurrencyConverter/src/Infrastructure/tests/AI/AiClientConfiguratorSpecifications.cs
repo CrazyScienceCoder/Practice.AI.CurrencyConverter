@@ -9,8 +9,6 @@ namespace Practice.Chatbot.CurrencyConverter.Infrastructure.Tests.AI;
 
 public sealed class AiClientConfiguratorSpecifications
 {
-    // ─── Missing configuration ────────────────────────────────────────────────
-
     [Fact]
     public void AddAiClient_MissingAiConfigSection_ThrowsInvalidOperationException()
     {
@@ -23,8 +21,6 @@ public sealed class AiClientConfiguratorSpecifications
             .WithMessage("*AI*");
     }
 
-    // ─── Unknown provider ─────────────────────────────────────────────────────
-
     [Fact]
     public void AddAiClient_UnknownProvider_ThrowsInvalidOperationException()
     {
@@ -36,8 +32,6 @@ public sealed class AiClientConfiguratorSpecifications
         act.Should().ThrowExactly<InvalidOperationException>()
             .WithMessage("*Unknown*");
     }
-
-    // ─── Ollama provider ──────────────────────────────────────────────────────
 
     [Fact]
     public void AddAiClient_OllamaProvider_DoesNotThrow()
@@ -61,8 +55,6 @@ public sealed class AiClientConfiguratorSpecifications
         services.Should().Contain(d => d.ServiceType == typeof(IChatClient));
     }
 
-    // ─── OpenAI provider ──────────────────────────────────────────────────────
-
     [Fact]
     public void AddAiClient_OpenAiProvider_DoesNotThrow()
     {
@@ -84,8 +76,6 @@ public sealed class AiClientConfiguratorSpecifications
 
         services.Should().Contain(d => d.ServiceType == typeof(IChatClient));
     }
-
-    // ─── Gemini provider ──────────────────────────────────────────────────────
 
     [Fact]
     public void AddAiClient_GeminiProvider_DoesNotThrow()
@@ -118,8 +108,6 @@ public sealed class AiClientConfiguratorSpecifications
 
         services.Should().Contain(d => d.ServiceType == typeof(IChatClient));
     }
-
-    // ─── AIFunction[] factory lambda ──────────────────────────────────────────
 
     [Fact]
     public void AddAiClient_OllamaProvider_RegistersDatePluginTransient()
@@ -160,8 +148,6 @@ public sealed class AiClientConfiguratorSpecifications
 
         result.Should().BeSameAs(services);
     }
-
-    // ─── Helpers ──────────────────────────────────────────────────────────────
 
     private static IConfiguration BuildConfig(
         string provider,
