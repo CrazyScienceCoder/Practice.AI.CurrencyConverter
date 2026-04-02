@@ -171,8 +171,8 @@ services:
         restart: always
         pull_policy: build
         build:
-            context: .
-            dockerfile: ./Practice.Chatbot.CurrencyConverter/Dockerfile
+            context: ./Practice.Chatbot.CurrencyConverter
+            dockerfile: Dockerfile
         environment:
             OPENSEARCH_NODE_URIS: "http://opensearch:9200"
             ASPNETCORE_ENVIRONMENT: "Development"
