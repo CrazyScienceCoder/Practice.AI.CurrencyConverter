@@ -125,7 +125,7 @@ The Currency API is built around DDD principles:
 
 | Pattern | Where |
 |---|---|
-| Clean Architecture | All three .NET services |
+| Clean Architecture | All .NET services |
 | CQRS | Application layer via MediatR |
 | Factory | `IExchangeRateProviderFactory` — selects provider per request |
 | Decorator | Redis caching wraps the exchange-rate provider (Scrutor) |
