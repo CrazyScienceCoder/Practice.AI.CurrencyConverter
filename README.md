@@ -35,7 +35,7 @@ A production-ready currency conversion platform built with Clean Architecture, D
 
 ```powershell
 ./Start-Deps.ps1    # uses docker-compose.deps.yml
-# Then run each service individually with dotnet run / npm run dev
+# Then run each service individually with dotnet run / yarn dev
 ```
 
 ---
